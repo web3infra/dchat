@@ -48,7 +48,7 @@ export default class Chatroom extends React.Component {
         <h3>{friendUsername}</h3>
         <ul className="chats" ref="chats">
           {
-            messages.map((message, index) => (
+            messages && messages.map((message, index) => (
               <Message chat={message} user={myUsername} key={index} />
             ))
           }

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 
 import LoginBox from './LoginBox.js';
-import RegisterBox from './RegisterBox.js';
 import Chatroom from './Chatroom.js';
 
 import { newNKNClient, getNKNAddr } from './nkn';
@@ -59,13 +58,6 @@ class App extends Component {
 
   sendMessage(username, message) {
     this.nknClient.send(getNKNAddr(username), message);
-    this.state = {
-      isLoginOpen: true,
-      isRegisterOpen: false
-    };
-
-    this.showLoginBox = this.showLoginBox.bind(this);
-    this.showRegisterBox = this.showRegisterBox.bind(this);
   }
 
   render() {
@@ -84,7 +76,6 @@ class App extends Component {
           :
           <LoginBox {...this.state}/>
         }
-        <Chatroom />
       </div>
     );
   }
