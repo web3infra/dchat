@@ -4,25 +4,10 @@ import './App.css';
 
 import Message from './Message.js';
 
-import nkn, { remoteAddr } from './nkn';
-
-class Chatroom extends React.Component {
+export default class Chatroom extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      chats: [{
-        username: nkn.addr.split('.')[0],
-        content: <p>{nkn.addr}</p>,
-        img: "http://i.imgur.com/Tj5DGiO.jpg",
-      }]
-    };
-
     this.submitMessage = this.submitMessage.bind(this);
-
-    nkn.on('message', (src, payload, payloadType) => {
-      this.receiveMessage(src.split('.')[0], payload);
-    });
   }
 
   componentDidMount() {
@@ -40,37 +25,32 @@ class Chatroom extends React.Component {
   submitMessage(e) {
     e.preventDefault();
 
+    let { receiveMessage, sendMessage, myUsername, friendUsername } = this.props;
+
     let input = ReactDOM.findDOMNode(this.refs.msg);
 
     if (input.value === "") {
       return;
     }
 
-    this.receiveMessage(nkn.addr.split('.')[0], input.value)
-    nkn.send(remoteAddr, input.value);
+    receiveMessage(friendUsername, myUsername, input.value);
+
+    sendMessage(friendUsername, input.value)
+
     input.value = "";
   }
 
-  receiveMessage(username, content) {
-    this.setState({
-      chats: this.state.chats.concat([{
-        username: username,
-        content: <p>{content}</p>,
-        img: "http://i.imgur.com/Tj5DGiO.jpg",
-      }]),
-    });
-  }
-
   render() {
-    const username = "Kevin Hsu";
-    const { chats } = this.state;
+    const { messages, myUsername, friendUsername } = this.props;
 
     return (
       <div className="chatroom">
-        <h3>D-Chat</h3>
+        <h3>{friendUsername}</h3>
         <ul className="chats" ref="chats">
           {
-            chats.map((chat, index) => <Message chat={chat} user={username} key={index} />)
+            messages.map((message, index) => (
+              <Message chat={message} user={myUsername} key={index} />
+            ))
           }
         </ul>
         <form className="input" onSubmit={(e) => this.submitMessage(e)}>
@@ -81,5 +61,3 @@ class Chatroom extends React.Component {
     );
   }
 }
-
-export default Chatroom;

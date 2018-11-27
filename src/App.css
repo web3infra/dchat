@@ -28,7 +28,7 @@ p {
 }
 
 .chatroom h3 {
-  font-family: 'Pacifico', cursive;
+  /* font-family: 'Pacifico', cursive; */
   background-color: rgba(30, 228, 148, 0.7);
   color: #FFF;
   margin: 0;
