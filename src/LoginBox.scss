@@ -7,6 +7,21 @@ body,
 }
 
 $blue_theme: #70a1ff;
+// customized
+.BNS-formbox {
+    display: flex;
+    border: 1px solid #70a1ff;
+    justify-content: space-between;
+}
+.login-input.fix-BNS-input {
+    border: 0px;
+}
+.BNS-option {
+    display: flex;
+    align-items: center;
+    padding-right: 10%
+}
+
 //Root Container
 .root-container {
     width: 100%;
@@ -50,7 +65,7 @@ $blue_theme: #70a1ff;
     display: flex;
     flex-direction: column;
     max-width: 24em;
-    min-width: 21em;
+    min-width: 14em;
     box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
     border-radius: 6px;
     padding: 24px;

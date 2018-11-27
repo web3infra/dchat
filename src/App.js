@@ -15,14 +15,10 @@ class App extends Component {
       chatWith: null,
       messages: {},
     };
-  }
 
-  componentDidMount() {
-    let r = parseInt(Math.random() * 2);
-    this.login(`${r}`);
-    this.setState({
-      chatWith: `${1-r}`,
-    });
+    this.login = this.login.bind(this);
+    this.receiveMessage = this.receiveMessage.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
   }
 
   login(username) {
@@ -70,11 +66,11 @@ class App extends Component {
             myUsername={this.state.username}
             friendUsername={this.state.chatWith}
             messages={this.state.messages[this.state.chatWith] || []}
-            receiveMessage={this.receiveMessage.bind(this)}
-            sendMessage={this.sendMessage.bind(this)}
+            receiveMessage={this.receiveMessage}
+            sendMessage={this.sendMessage}
             />
           :
-          <LoginBox {...this.state}/>
+          <LoginBox login={this.login}/>
         }
       </div>
     );
