@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans|Pacifico');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans|Pacifico");
 
 body {
   margin: 0;
@@ -21,16 +21,16 @@ p {
 .chatlist-container {
   width: 360px;
   height: 600px;
-  background-color: rgba(0,0,0, .7);
+  background-color: rgba(0, 0, 0, 0.7);
   border-radius: 5px;
   overflow: hidden;
-  box-shadow: 0 0 8px 0 rgba(0,0,0, 0.3);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);
 }
 
 .chatlist-container .chatlist-header {
-  font-family: 'Pacifico', cursive;
+  font-family: "Pacifico", cursive;
   background-color: rgba(30, 228, 148, 0.7);
-  color: #FFF;
+  color: #fff;
   margin: 0;
   height: 40px;
   font-size: 20px;
@@ -74,15 +74,15 @@ p {
 .chatroom {
   width: 360px;
   height: 600px;
-  background-color: rgba(0,0,0, .7);
+  background-color: rgba(0, 0, 0, 0.7);
   border-radius: 5px;
   overflow: hidden;
-  box-shadow: 0 0 8px 0 rgba(0,0,0, 0.3);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);
 }
 
 .chatroom .chatroom-header {
   background-color: rgba(30, 228, 148, 0.7);
-  color: #FFF;
+  color: #fff;
   margin: 0;
   height: 40px;
   font-size: 20px;
@@ -106,11 +106,14 @@ p {
   flex: 1;
 }
 
+.chatroom .emojis img {
+  max-height: 50px;
+}
 .chatroom .messages {
   box-sizing: border-box;
   padding: 0 20px;
   margin: 10px 0 0;
-  height: 510px;
+  height: 380px;
   overflow-y: scroll;
 }
 
@@ -127,13 +130,22 @@ p {
   max-width: 200px;
 }
 
-.chatroom .messages .message img {
+.chatroom .messages .message img.avatar {
   width: 20px;
   height: 20px;
   border-radius: 50%;
   position: absolute;
   top: -10px;
   left: 0px;
+}
+
+.chatroom .messages .message .emoji img {
+  width: 100px;
+  height: 100px;
+  /* border-radius: 50%; */
+  /* position: absolute; */
+  /* top: 0px; */
+  /* left: 0px; */
 }
 
 .chatroom .messages .message.right {
@@ -143,7 +155,7 @@ p {
 
 .chatroom .messages .message a {
   text-decoration: none;
-  color:#3498DB;
+  color: #3498db;
 }
 
 .chatroom .input {
@@ -158,7 +170,7 @@ p {
 .chatroom .input input[type="text"] {
   background: rgba(255, 255, 255, 0.5);
   outline: 0;
-  border: 2px solid #1EE494;
+  border: 2px solid #1ee494;
   padding: 0 5px;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
@@ -171,7 +183,7 @@ p {
 
 .chatroom .input input[type="submit"] {
   background: transparent;
-  border: 1px solid #1EE494;
+  border: 1px solid #1ee494;
   height: 30px;
   width: 70px;
   font-size: 14px;
@@ -183,6 +195,75 @@ p {
 }
 
 .chatroom .input input[type="submit"]:hover {
-  background: #1EE494;
-  color: #FFF;
+  background: #1ee494;
+  color: #fff;
+}
+
+.loader {
+  position: relative;
+  box-sizing: border-box;
+  display: inline-block;
+  height: 32px;
+  width: 32px;
+  animation: spinner-reveal 1.4s steps(1, end) infinite,
+    spinner-rotation 1.4s ease-in-out infinite;
+  clip-path: inset(0 0 0 50%);
+}
+.loader.big {
+  height: 64px;
+  width: 64px;
+}
+.loader::before,
+.loader::after {
+  box-sizing: border-box;
+  content: "";
+  width: 100%;
+  height: 100%;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  clip-path: inset(0 50% 0 0);
+  animation: spinner-rotation-a 1.4s linear infinite;
+  transition: border-color 0.5s ease-out;
+}
+.loader::after {
+  animation-name: spinner-rotation-b;
+}
+/***
+ * Animations
+ */
+@keyframes spinner-rotation {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner-rotation-a {
+  40%,
+  60% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(540deg);
+  }
+}
+@keyframes spinner-rotation-b {
+  40% {
+    transform: rotate(180deg);
+  }
+  80% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(540deg);
+  }
+}
+@keyframes spinner-reveal {
+  40% {
+    clip-path: inset(0 0 0 0);
+  }
+  80% {
+    clip-path: inset(0 50% 0 0);
+  }
 }
