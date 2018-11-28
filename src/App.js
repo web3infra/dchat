@@ -35,7 +35,8 @@ class App extends Component {
     this.nknClient = newNKNClient(username);
     this.nknClient.on('message', (src, payload, payloadType) => {
       let username = src.split('.')[0];
-      this.receiveMessage(username, username, payload);
+      const data = JSON.parse(payload);
+      this.receiveMessage(username, username, data.content, data.contentType);
     });
 
     this.setState({
@@ -44,13 +45,14 @@ class App extends Component {
     });
   }
 
-  receiveMessage = (chatID, username, message) => {
+  receiveMessage = (chatID, username, message, contentType) => {
     let chat = this.state.chats[chatID] || { users: [this.username, username] };
     let messageList = chat.messages || [];
 
     messageList = messageList.concat({
       username: username,
-      content: <p>{message}</p>,
+      content: message,
+      contentType: contentType,
       img: "http://i.imgur.com/Tj5DGiO.jpg",
     });
 

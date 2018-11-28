@@ -1,12 +1,16 @@
 import React from 'react';
+import { Image } from "@noia-network/sdk-react";
 
-const Message = ({message, user}) => (
-  <li className={`message ${user === message.username ? "right" : "left"}`}>
+const Message = ({ message, user }) => (
+  <li className={`${message.contentType === "image" ? "message message-image" : "message"} ${user === message.username ? "right" : "left"}`}>
     {user !== message.username
-      && <img src={message.img} alt={`${message.username}'s profile pic`} />
-  }
-  {message.content}
-</li>
+      && <img className="avatar" src={message.img} alt={`${message.username}'s profile pic`} />
+    }
+    {message.contentType === "image" ? <div className="emoji"><Image
+      src={message.content}
+      loaderComponent={<div className="loader" />}
+    /></div> : <p>{message.content}</p>}
+  </li>
 );
 
 export default Message;

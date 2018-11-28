@@ -1,4 +1,5 @@
 import React from 'react';
+import KAIZENImage from './kaizen_logo.png';
 import './LoginBox.css';
 
 class LoginBox extends React.Component {
@@ -47,7 +48,7 @@ class LoginBox extends React.Component {
                   className="login-input fix-BNS-input"
                   placeholder="yourname">
                 </input>
-                <div className="BNS-option"> .eth </div>
+                <div className="BNS-option"> .portal </div>
               </div>
             </div>
 
@@ -66,6 +67,11 @@ class LoginBox extends React.Component {
               type="button"
               className="login-btn"
               onClick={this.handleLoginSubmit}>Login</button>
+
+            <div className='LoginFooter'>
+              <p>Powered by KAIZEN</p>
+              <img src={KAIZENImage} alt=""/>
+            </div>
           </div>
         </div>
       </div>
