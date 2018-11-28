@@ -8,6 +8,8 @@ import LoginBox from './LoginBox';
 
 import { newNKNClient, getNKNAddr } from './nkn';
 
+import {BluzelleClient} from 'bluzelle';
+
 function genChatID() {
   return uuid()
 }
@@ -27,9 +29,104 @@ class App extends Component {
     };
   }
 
-  login = (username) => {
-    // bluezelle: initialize client
-    // bluezelle: get chat history
+
+
+  getHistoricalChatRooms = async () => 
+  {
+      await this.bluzelleChatHistoryConnection.connect();
+
+//      await this.bluzelleChatHistoryConnection.create('san francisco2', 'california2');
+
+//      console.log(await this.bluzelleChatHistoryConnection.read('san francisco2'));
+
+      this.historicalChatRoomKeysArray = (await this.bluzelleChatHistoryConnection.keys());
+
+//    window.keys = (await this.bluzelleChatHistoryConnection.read('san francisco2'));
+
+      //this.bluzelleChatHistoryConnection.bluzelle.keys().then(foo2 => { foo = foo2 }, error => { });
+
+      await this.bluzelleChatHistoryConnection.disconnect();
+  };
+
+
+
+  getHistoricalChatMessagesFromRooms = async () =>
+  {
+    this.historicalChatRoomKeysArray.forEach(async function(strCurrentChatRoomId) 
+    {
+        var strHistoricalChatRoomMessagesUUID = 'dchat_messages_history_' + strCurrentChatRoomId;
+
+        console.log("Getting chat messages from room: " + strCurrentChatRoomId + " from namespace: " + strHistoricalChatRoomMessagesUUID);
+
+        var bluzelleChatMessagesHistoryConnection = new BluzelleClient(
+            'ws://test.network.bluzelle.com:51010',
+
+            // This UUID identifies your database and
+            // may be changed.
+            //
+            // Use a service like https://www.uuidgenerator.net to generate a new one
+
+            strHistoricalChatRoomMessagesUUID
+        );     
+
+        await bluzelleChatMessagesHistoryConnection.connect();
+
+        var arrayMembers = JSON.parse(await bluzelleChatMessagesHistoryConnection.read('users'));
+
+        arrayMembers.forEach(function(strMember)
+        {
+            console.log("Found member: " + strMember + " for room: " + strCurrentChatRoomId)
+        })
+
+        var historicalChatMessagesKeysArray = (await bluzelleChatMessagesHistoryConnection.keys());
+
+        historicalChatMessagesKeysArray.forEach(async function(strCurrentChatMessageKey) 
+        {
+            // Ignore the "members" key as it is not an actual message
+
+            if (strCurrentChatMessageKey != "users")
+            {
+                console.log("Getting chat message data for message with id: " + strCurrentChatMessageKey);          
+
+                var objectCurrentChatMessage = JSON.parse(await bluzelleChatMessagesHistoryConnection.read(strCurrentChatMessageKey));
+
+                console.log("Message with id: " + strCurrentChatMessageKey + " has value: " + objectCurrentChatMessage.content + " and was sent by username: " + objectCurrentChatMessage.username + " with content type: " + objectCurrentChatMessage.contentType)                
+            } 
+        });
+    });
+  }
+
+
+
+  login = async (username) => {
+
+    //////////////////////////////////
+    // bluezelle: initialize client //
+    //////////////////////////////////
+
+    this.strHistoricalChatRoomsUUID = 'dchat_history_' + username;
+
+    console.log("Connecting to the following namespace on Bluzelle to get historical chat room GUIDS: " + this.strHistoricalChatRoomsUUID)
+
+    this.bluzelleChatHistoryConnection = new BluzelleClient(
+        'ws://test.network.bluzelle.com:51010',
+
+        // This UUID identifies your database and
+        // may be changed.
+        //
+        // Use a service like https://www.uuidgenerator.net to generate a new one
+
+        this.strHistoricalChatRoomsUUID
+    );
+
+    await this.getHistoricalChatRooms()
+
+    /////////////////////////////////
+    // bluezelle: get chat history //
+    /////////////////////////////////
+
+    this.getHistoricalChatMessagesFromRooms()
+
     // bluezelle: get friends
 
     this.nknClient = newNKNClient(username);
