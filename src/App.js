@@ -25,31 +25,32 @@ class App extends Component {
     let chats = {};
 
     allChatID.forEach(async (chatID) => {
-      var strHistoricalChatRoomMessagesUUID = getChatDatabaseID(chatID);
-      var bluzelleChatMessagesHistoryConnection = newBluzelleClient(strHistoricalChatRoomMessagesUUID);
-      await bluzelleChatMessagesHistoryConnection.connect();
+      let chatDatabase = newBluzelleClient(getChatDatabaseID(chatID));
+      await chatDatabase.connect();
 
       let chat = {};
 
       try {
-        chat.users = JSON.parse(await bluzelleChatMessagesHistoryConnection.read('users'))
+        chat.users = JSON.parse(await chatDatabase.read('users'))
       } catch (e) {
         console.error(e);
       }
 
-      let allMessageID = await bluzelleChatMessagesHistoryConnection.keys();
+      let allMessageID = await chatDatabase.keys();
       let allMessageStr = await Promise.all(allMessageID.filter(
         messageID => messageID !== "users"
       ).map(
         messageID => {
           try {
-            return bluzelleChatMessagesHistoryConnection.read(messageID);
+            return chatDatabase.read(messageID);
           } catch (e) {
             console.error(e);
             return null;
           }
         }
       ));
+
+      chatDatabase.disconnect();
 
       chat.messages = allMessageStr.filter(
         messageStr => messageStr && messageStr.length > 0
