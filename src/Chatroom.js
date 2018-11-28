@@ -46,7 +46,10 @@ export default class Chatroom extends React.Component {
 
     chat.users.forEach((username) => {
       if (username !== myUsername) {
-        sendMessage(username, JSON.stringify({ content: input.value, contentType: "text" }));
+        sendMessage(username, JSON.stringify({
+          content: input.value,
+          contentType: "text",
+        }));
       }
     });
 
@@ -54,7 +57,7 @@ export default class Chatroom extends React.Component {
   }
 
   submitImage = (src) => {
-    let { receiveMessage, sendMessage, myUsername, chatID } = this.props;
+    let { receiveMessage, sendMessage, myUsername, chatID, chat } = this.props;
 
     receiveMessage(chatID, myUsername, src, "image");
 
