@@ -19,7 +19,7 @@ export default class Chatroom extends React.Component {
   }
 
   scrollToBot() {
-    ReactDOM.findDOMNode(this.refs.chats).scrollTop = ReactDOM.findDOMNode(this.refs.chats).scrollHeight;
+    ReactDOM.findDOMNode(this.refs.messages).scrollTop = ReactDOM.findDOMNode(this.refs.messages).scrollHeight;
   }
 
   submitMessage(e) {
@@ -41,15 +41,19 @@ export default class Chatroom extends React.Component {
   }
 
   render() {
-    const { messages, myUsername, friendUsername } = this.props;
+    const { messages, myUsername, friendUsername, leaveChatroom } = this.props;
 
     return (
       <div className="chatroom">
-        <h3>{friendUsername}</h3>
-        <ul className="chats" ref="chats">
+        <span className="header">
+          <span className="back" onClick={leaveChatroom}>{'< Back'}</span>
+          <span className="chatname">{friendUsername}</span>
+          <span className="empty"></span>
+        </span>
+        <ul className="messages" ref="messages">
           {
             messages.map((message, index) => (
-              <Message chat={message} user={myUsername} key={index} />
+              <Message message={message} user={myUsername} key={index} />
             ))
           }
         </ul>

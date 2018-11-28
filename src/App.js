@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import Chatroom from './Chatroom.js';
+import ChatList from './ChatList';
+import Chatroom from './Chatroom';
 
 import { newNKNClient, getNKNAddr } from './nkn';
 
@@ -19,9 +20,6 @@ class App extends Component {
   componentDidMount() {
     let r = parseInt(Math.random() * 2);
     this.login(`${r}`);
-    this.setState({
-      chatWith: `${1-r}`,
-    });
   }
 
   login(username) {
@@ -35,9 +33,15 @@ class App extends Component {
       this.receiveMessage(username, username, payload);
     });
 
+    let messages = {
+      '0': [],
+      '1': [],
+    };
+    delete messages[username];
+
     this.setState({
       username: username,
-      messages: {},
+      messages: messages,
     });
   }
 
@@ -59,19 +63,33 @@ class App extends Component {
     this.nknClient.send(getNKNAddr(username), message);
   }
 
+  enterChatroom(chat) {
+    this.setState({
+      chatWith: chat,
+    });
+  }
+
   render() {
     return (
       <div className="App">
         {
-          this.state.username
-          ?
-          <Chatroom
-            myUsername={this.state.username}
-            friendUsername={this.state.chatWith}
-            messages={this.state.messages[this.state.chatWith] || []}
-            receiveMessage={this.receiveMessage.bind(this)}
-            sendMessage={this.sendMessage.bind(this)}
-            />
+          this.state.username ?
+          (
+            this.state.chatWith ?
+            <Chatroom
+              myUsername={this.state.username}
+              friendUsername={this.state.chatWith}
+              messages={this.state.messages[this.state.chatWith] || []}
+              receiveMessage={this.receiveMessage.bind(this)}
+              sendMessage={this.sendMessage.bind(this)}
+              leaveChatroom={() => this.enterChatroom(null)}
+              />
+            :
+            <ChatList
+              chats={this.state.messages}
+              enterChatroom={this.enterChatroom.bind(this)}
+              />
+          )
           :
           null // portal: login screen
         }

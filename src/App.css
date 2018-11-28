@@ -18,7 +18,7 @@ p {
   justify-content: center;
 }
 
-.chatroom {
+.chatlist-container {
   width: 360px;
   height: 600px;
   background-color: rgba(0,0,0, .7);
@@ -27,8 +27,8 @@ p {
   box-shadow: 0 0 8px 0 rgba(0,0,0, 0.3);
 }
 
-.chatroom h3 {
-  /* font-family: 'Pacifico', cursive; */
+.chatlist-container h3 {
+  font-family: 'Pacifico', cursive;
   background-color: rgba(30, 228, 148, 0.7);
   color: #FFF;
   margin: 0;
@@ -39,7 +39,7 @@ p {
   justify-content: center;
 }
 
-.chatroom .chats {
+.chatlist-container .chatlist {
   box-sizing: border-box;
   padding: 0 20px;
   margin: 10px 0 0;
@@ -47,7 +47,66 @@ p {
   overflow-y: scroll;
 }
 
-.chatroom .chats .chat {
+.chatlist-container .chatlist .chat {
+  background: rgba(255, 255, 255, 0.8);
+  list-style: none;
+  cursor: pointer;
+  padding: 5px 13px;
+  font-size: 16px;
+}
+
+.chatroom {
+  width: 360px;
+  height: 600px;
+  background-color: rgba(0,0,0, .7);
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 0 8px 0 rgba(0,0,0, 0.3);
+}
+
+.chatroom .header {
+  background-color: rgba(30, 228, 148, 0.7);
+  color: #FFF;
+  margin: 0;
+  height: 40px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatroom .header .chatname {
+  /* background-color: rgba(30, 228, 148, 0.7);
+  color: #FFF;
+  margin: 0;
+  height: 40px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center; */
+}
+
+.chatroom .header .back {
+  margin: 10px;
+  font-size: 14px;
+  flex: 1;
+  cursor: pointer;
+}
+
+.chatroom .header .empty {
+  margin: 10px;
+  flex: 1;
+}
+
+.chatroom .messages {
+  box-sizing: border-box;
+  padding: 0 20px;
+  margin: 10px 0 0;
+  height: 510px;
+  overflow-y: scroll;
+}
+
+.chatroom .messages .message {
   background: rgba(255, 255, 255, 0.8);
   position: relative;
   padding: 5px 13px;
@@ -60,7 +119,7 @@ p {
   max-width: 200px;
 }
 
-.chatroom .chats .chat img {
+.chatroom .messages .message img {
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -69,12 +128,12 @@ p {
   left: 0px;
 }
 
-.chatroom .chats .chat.right {
+.chatroom .messages .message.right {
   float: right;
   clear: both;
 }
 
-.chatroom .chats .chat a {
+.chatroom .messages .message a {
   text-decoration: none;
   color:#3498DB;
 }
