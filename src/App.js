@@ -3,6 +3,7 @@ import './App.css';
 
 import ChatList from './ChatList';
 import Chatroom from './Chatroom';
+import LoginBox from './LoginBox';
 
 import { newNKNClient, getNKNAddr } from './nkn';
 
@@ -15,11 +16,11 @@ class App extends Component {
       chatWith: null,
       messages: {},
     };
-  }
 
-  componentDidMount() {
-    let r = parseInt(Math.random() * 2);
-    this.login(`${r}`);
+    this.login = this.login.bind(this);
+    this.receiveMessage = this.receiveMessage.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+    this.enterChatroom = this.enterChatroom.bind(this);
   }
 
   login(username) {
@@ -80,18 +81,18 @@ class App extends Component {
               myUsername={this.state.username}
               friendUsername={this.state.chatWith}
               messages={this.state.messages[this.state.chatWith] || []}
-              receiveMessage={this.receiveMessage.bind(this)}
-              sendMessage={this.sendMessage.bind(this)}
+              receiveMessage={this.receiveMessage}
+              sendMessage={this.sendMessage}
               leaveChatroom={() => this.enterChatroom(null)}
               />
             :
             <ChatList
               chats={this.state.messages}
-              enterChatroom={this.enterChatroom.bind(this)}
+              enterChatroom={this.enterChatroom}
               />
           )
           :
-          null // portal: login screen
+          <LoginBox login={this.login}/>
         }
       </div>
     );
