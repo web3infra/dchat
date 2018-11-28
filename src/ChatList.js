@@ -4,7 +4,16 @@ import { getChatName } from './util';
 
 export default class ChatList extends React.Component {
   newChat = () => {
-    let usernames = prompt("Usernames separated by comma").split(',').map(s => s.trim());
+    let usernamesStr = prompt('Usernames separated by comma');
+    if (!usernamesStr) {
+      return
+    }
+
+    let usernames = usernamesStr.split(',').map(s => s.trim()).filter(s => s && s.length > 0);
+    if (!usernames.length) {
+      return;
+    }
+
     let chatID = this.props.createChatroom(usernames);
     this.props.enterChatroom(chatID);
   }
