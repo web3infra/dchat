@@ -26,7 +26,8 @@ class App extends Component {
     this.nknClient = newNKNClient(username);
     this.nknClient.on('message', (src, payload, payloadType) => {
       let username = src.split('.')[0];
-      this.receiveMessage(username, username, payload);
+      const data = JSON.parse(payload);
+      this.receiveMessage(username, username, data.content, data.contentType);
     });
 
     this.setState({
@@ -35,12 +36,13 @@ class App extends Component {
     });
   }
 
-  receiveMessage = (chat, username, message) => {
+  receiveMessage = (chat, username, message, contentType) => {
     let messageList = this.state.messages[chat] || [];
 
     messageList.push({
       username: username,
-      content: <p>{message}</p>,
+      content: message,
+      contentType: contentType,
       img: "http://i.imgur.com/Tj5DGiO.jpg",
     });
 
@@ -64,24 +66,24 @@ class App extends Component {
       <div className="App">
         {
           this.state.username ?
-          (
-            this.state.chatWith ?
-            <Chatroom
-              myUsername={this.state.username}
-              friendUsername={this.state.chatWith}
-              messages={this.state.messages[this.state.chatWith] || []}
-              receiveMessage={this.receiveMessage}
-              sendMessage={this.sendMessage}
-              leaveChatroom={() => this.enterChatroom(null)}
-              />
+            (
+              this.state.chatWith ?
+                <Chatroom
+                  myUsername={this.state.username}
+                  friendUsername={this.state.chatWith}
+                  messages={this.state.messages[this.state.chatWith] || []}
+                  receiveMessage={this.receiveMessage}
+                  sendMessage={this.sendMessage}
+                  leaveChatroom={() => this.enterChatroom(null)}
+                />
+                :
+                <ChatList
+                  chats={this.state.messages}
+                  enterChatroom={this.enterChatroom}
+                />
+            )
             :
-            <ChatList
-              chats={this.state.messages}
-              enterChatroom={this.enterChatroom}
-              />
-          )
-          :
-          <LoginBox login={this.login}/>
+            <LoginBox login={this.login} />
         }
       </div>
     );
