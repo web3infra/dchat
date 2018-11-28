@@ -45,7 +45,7 @@ export default class Chatroom extends React.Component {
 
     return (
       <div className="chatroom">
-        <span className="header">
+        <span className="chatroom-header">
           <span className="back" onClick={leaveChatroom}>{'< Back'}</span>
           <span className="chatname">{friendUsername}</span>
           <span className="empty"></span>

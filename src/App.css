@@ -64,7 +64,7 @@ p {
   box-shadow: 0 0 8px 0 rgba(0,0,0, 0.3);
 }
 
-.chatroom .header {
+.chatroom .chatroom-header {
   background-color: rgba(30, 228, 148, 0.7);
   color: #FFF;
   margin: 0;
@@ -75,25 +75,17 @@ p {
   justify-content: center;
 }
 
-.chatroom .header .chatname {
-  /* background-color: rgba(30, 228, 148, 0.7);
-  color: #FFF;
-  margin: 0;
-  height: 40px;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center; */
+.chatroom .chatroom-header .chatname {
 }
 
-.chatroom .header .back {
+.chatroom .chatroom-header .back {
   margin: 10px;
   font-size: 14px;
   flex: 1;
   cursor: pointer;
 }
 
-.chatroom .header .empty {
+.chatroom .chatroom-header .empty {
   margin: 10px;
   flex: 1;
 }
