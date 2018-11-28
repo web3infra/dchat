@@ -29,15 +29,9 @@ class App extends Component {
       this.receiveMessage(username, username, payload);
     });
 
-    let messages = {
-      '0': [],
-      '1': [],
-    };
-    delete messages[username];
-
     this.setState({
       username: username,
-      messages: messages,
+      messages: {},
     });
   }
 
