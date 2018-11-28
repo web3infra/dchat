@@ -27,7 +27,7 @@ p {
   box-shadow: 0 0 8px 0 rgba(0,0,0, 0.3);
 }
 
-.chatlist-container h3 {
+.chatlist-container .chatlist-header {
   font-family: 'Pacifico', cursive;
   background-color: rgba(30, 228, 148, 0.7);
   color: #FFF;
@@ -37,6 +37,22 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.chatlist-container .chatlist-header .title {
+}
+
+.chatlist-container .chatlist-header .new {
+  margin: 10px;
+  font-size: 14px;
+  flex: 1;
+  cursor: pointer;
+  text-align: right;
+}
+
+.chatlist-container .chatlist-header .empty {
+  margin: 10px;
+  flex: 1;
 }
 
 .chatlist-container .chatlist {

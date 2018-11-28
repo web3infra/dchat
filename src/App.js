@@ -16,14 +16,9 @@ class App extends Component {
       chatWith: null,
       messages: {},
     };
-
-    this.login = this.login.bind(this);
-    this.receiveMessage = this.receiveMessage.bind(this);
-    this.sendMessage = this.sendMessage.bind(this);
-    this.enterChatroom = this.enterChatroom.bind(this);
   }
 
-  login(username) {
+  login = (username) => {
     // bluezelle: initialize client
     // bluezelle: get chat history
     // bluezelle: get friends
@@ -46,7 +41,7 @@ class App extends Component {
     });
   }
 
-  receiveMessage(chat, username, message) {
+  receiveMessage = (chat, username, message) => {
     let messageList = this.state.messages[chat] || [];
 
     messageList.push({
@@ -60,11 +55,11 @@ class App extends Component {
     });
   }
 
-  sendMessage(username, message) {
+  sendMessage = (username, message) => {
     this.nknClient.send(getNKNAddr(username), message);
   }
 
-  enterChatroom(chat) {
+  enterChatroom = (chat) => {
     this.setState({
       chatWith: chat,
     });

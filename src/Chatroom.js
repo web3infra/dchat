@@ -5,11 +5,6 @@ import './App.css';
 import Message from './Message.js';
 
 export default class Chatroom extends React.Component {
-  constructor(props) {
-    super(props);
-    this.submitMessage = this.submitMessage.bind(this);
-  }
-
   componentDidMount() {
     this.scrollToBot();
   }
@@ -22,7 +17,7 @@ export default class Chatroom extends React.Component {
     ReactDOM.findDOMNode(this.refs.messages).scrollTop = ReactDOM.findDOMNode(this.refs.messages).scrollHeight;
   }
 
-  submitMessage(e) {
+  submitMessage = (e) => {
     e.preventDefault();
 
     let { receiveMessage, sendMessage, myUsername, friendUsername } = this.props;

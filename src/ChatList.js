@@ -13,6 +13,11 @@ class Chat extends React.Component {
 }
 
 export default class ChatList extends React.Component {
+  newChat = () => {
+    let username = prompt("Username");
+    this.props.enterChatroom(username)
+  }
+
   render() {
     const { chats, enterChatroom } = this.props;
 
@@ -38,7 +43,11 @@ export default class ChatList extends React.Component {
 
     return (
       <div className="chatlist-container">
-        <h3>D-Chat</h3>
+        <span className="chatlist-header">
+          <span className="empty"></span>
+          <span className="title">D-Chat</span>
+          <span className="new" onClick={this.newChat}>New+</span>
+        </span>
         <ul className="chatlist">
           {
             chatList.map(chat => (
