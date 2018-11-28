@@ -21,10 +21,10 @@ class LoginBox extends React.Component {
 
   handleLoginSubmit(e) {
     e.preventDefault();
-    if (!this.state.password) {
-      alert('Should put in your password')
-      return
-    }
+    // if (!this.state.password) {
+    //   alert('Should put in your password')
+    //   return
+    // }
     this.props.login(this.state.formUsername);
   }
 

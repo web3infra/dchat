@@ -75,7 +75,7 @@ export default class Chatroom extends React.Component {
   }
 
   render() {
-    const { chatID, chat, myUsername, leaveChatroom } = this.props;
+    const { chat, myUsername, leaveChatroom } = this.props;
 
     return (
       <div className="chatroom">
@@ -86,7 +86,7 @@ export default class Chatroom extends React.Component {
         </span>
         <ul className="messages" ref="messages">
           {
-            chat.messages && chat.messages.map((message, index) => (
+            chat && chat.messages && chat.messages.map((message, index) => (
               <Message message={message} user={myUsername} key={index} />
             ))
           }

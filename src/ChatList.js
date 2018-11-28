@@ -24,12 +24,12 @@ export default class ChatList extends React.Component {
 
     chatList.sort(function(a, b) {
       if (!a.chat.messages || a.chat.messages.length === 0) {
-        return -1;
-      }
-      if (!b.chat.messages || b.chat.messages.length === 0) {
         return 1;
       }
-      return a.chat.messages[a.chat.messages.length-1].time - b.chat.messages[b.chat.messages.length-1].time;
+      if (!b.chat.messages || b.chat.messages.length === 0) {
+        return -1;
+      }
+      return b.chat.messages[b.chat.messages.length-1].timestamp - a.chat.messages[a.chat.messages.length-1].timestamp;
     });
 
     return (

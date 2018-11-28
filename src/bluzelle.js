@@ -6,10 +6,19 @@ export function newBluzelleClient(uuid) {
   return new BluzelleClient(wsAddr, uuid);
 }
 
+export async function getAllKeys(databaseID) {
+  let bluzelleClient = newBluzelleClient(databaseID);
+  await bluzelleClient.connect();
+  let keys = await bluzelleClient.keys()
+  bluzelleClient.disconnect();
+  return keys;
+}
+
 export async function writeToDB(databaseID, key, value) {
   let bluzelleClient = newBluzelleClient(databaseID);
   await bluzelleClient.connect();
   await bluzelleClient.create(key, value);
+  await bluzelleClient.disconnect();
 }
 
 export function getUserDatabaseID(username) {
@@ -17,5 +26,5 @@ export function getUserDatabaseID(username) {
 }
 
 export function getChatDatabaseID(chatID) {
-  return '' + chatID;
+  return 'dchat_messages_history_' + chatID;
 }

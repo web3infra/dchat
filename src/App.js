@@ -6,7 +6,7 @@ import Chatroom from './Chatroom';
 import LoginBox from './LoginBox';
 
 import { newNKNClient, getNKNAddr } from './nkn';
-import { newBluzelleClient, writeToDB, getUserDatabaseID, getChatDatabaseID } from './bluzelle';
+import { newBluzelleClient, getAllKeys, writeToDB, getUserDatabaseID, getChatDatabaseID } from './bluzelle';
 import { genChatID, genMessageID } from './util';
 
 class App extends Component {
@@ -20,108 +20,63 @@ class App extends Component {
     };
   }
 
+  fetchHistory = async (username) => {
+    let allChatID = await getAllKeys(getUserDatabaseID(username));
+    let chats = {};
 
+    allChatID.forEach(async (chatID) => {
+      var strHistoricalChatRoomMessagesUUID = getChatDatabaseID(chatID);
+      var bluzelleChatMessagesHistoryConnection = newBluzelleClient(strHistoricalChatRoomMessagesUUID);
+      await bluzelleChatMessagesHistoryConnection.connect();
 
-  getHistoricalChatRooms = async () =>
-  {
-      await this.bluzelleChatHistoryConnection.connect();
+      let chat = {};
 
-//      await this.bluzelleChatHistoryConnection.create('san francisco2', 'california2');
+      try {
+        chat.users = JSON.parse(await bluzelleChatMessagesHistoryConnection.read('users'))
+      } catch (e) {
+        console.error(e);
+      }
 
-//      console.log(await this.bluzelleChatHistoryConnection.read('san francisco2'));
+      let allMessageID = await bluzelleChatMessagesHistoryConnection.keys();
+      let allMessageStr = await Promise.all(allMessageID.filter(
+        messageID => messageID !== "users"
+      ).map(
+        messageID => {
+          try {
+            return bluzelleChatMessagesHistoryConnection.read(messageID);
+          } catch (e) {
+            console.error(e);
+            return null;
+          }
+        }
+      ));
 
-      this.historicalChatRoomKeysArray = (await this.bluzelleChatHistoryConnection.keys());
+      chat.messages = allMessageStr.filter(
+        messageStr => messageStr && messageStr.length > 0
+      ).map(
+        messageStr => JSON.parse(messageStr)
+      );
 
-//    window.keys = (await this.bluzelleChatHistoryConnection.read('san francisco2'));
+      chat.messages.sort((a, b) => (a.timestamp - b.timestamp));
 
-      //this.bluzelleChatHistoryConnection.bluzelle.keys().then(foo2 => { foo = foo2 }, error => { });
+      chats[chatID] = chat;
 
-      await this.bluzelleChatHistoryConnection.disconnect();
-  };
-
-
-
-  getHistoricalChatMessagesFromRooms = async () =>
-  {
-    this.historicalChatRoomKeysArray.forEach(async function(strCurrentChatRoomId)
-    {
-        var strHistoricalChatRoomMessagesUUID = 'dchat_messages_history_' + strCurrentChatRoomId;
-
-        console.log("Getting chat messages from room: " + strCurrentChatRoomId + " from namespace: " + strHistoricalChatRoomMessagesUUID);
-
-        var bluzelleChatMessagesHistoryConnection = newBluzelleClient(strHistoricalChatRoomMessagesUUID);  
-
-        await bluzelleChatMessagesHistoryConnection.connect();
-
-        var arrayMembers = JSON.parse(await bluzelleChatMessagesHistoryConnection.read('users'));
-
-        arrayMembers.forEach(function(strMember)
-        {
-            console.log("Found member: " + strMember + " for room: " + strCurrentChatRoomId)
-        })
-
-        var historicalChatMessagesKeysArray = (await bluzelleChatMessagesHistoryConnection.keys());
-
-        historicalChatMessagesKeysArray.forEach(async function(strCurrentChatMessageKey)
-        {
-            // Ignore the "members" key as it is not an actual message
-
-            if (strCurrentChatMessageKey != "users")
-            {
-                console.log("Getting chat message data for message with id: " + strCurrentChatMessageKey);
-
-                var objectCurrentChatMessage = JSON.parse(await bluzelleChatMessagesHistoryConnection.read(strCurrentChatMessageKey));
-
-                console.log("Message with id: " + strCurrentChatMessageKey + " has value: " + objectCurrentChatMessage.content + " and was sent by username: " + objectCurrentChatMessage.username + " with content type: " + objectCurrentChatMessage.contentType)
-            }
-        });
+      this.setState({
+        chats: chats,
+      });
     });
   }
 
-
-
-  login = async (username) => {
-
-    //////////////////////////////////
-    // bluezelle: initialize client //
-    //////////////////////////////////
-
-    this.strHistoricalChatRoomsUUID = 'dchat_history_' + username;
-
-    console.log("Connecting to the following namespace on Bluzelle to get historical chat room GUIDS: " + this.strHistoricalChatRoomsUUID)
-
-    this.bluzelleChatHistoryConnection = new BluzelleClient(
-        'ws://test.network.bluzelle.com:51010',
-
-        // This UUID identifies your database and
-        // may be changed.
-        //
-        // Use a service like https://www.uuidgenerator.net to generate a new one
-
-        this.strHistoricalChatRoomsUUID
-    );
-
-    await this.getHistoricalChatRooms()
-
-    /////////////////////////////////
-    // bluezelle: get chat history //
-    /////////////////////////////////
-
-    this.getHistoricalChatMessagesFromRooms()
-
-    // bluezelle: get friends
+  login = (username) => {
+    this.fetchHistory(username);
 
     this.nknClient = newNKNClient(username);
     this.nknClient.on('message', (src, payload, payloadType) => {
       let data = JSON.parse(payload);
-      console.log(data);
       this.receiveMessage(data.chatID, data.message);
     });
 
-    this.setState({
-      username: username,
-      chats: {},
-    });
+    this.setState({ username: username });
   }
 
   receiveMessage = (chatID, message) => {
