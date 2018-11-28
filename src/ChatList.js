@@ -2,11 +2,11 @@ import React from 'react';
 
 class Chat extends React.Component {
   render() {
-    const { name, onClick } = this.props;
+    const { chat, onClick } = this.props;
 
     return (
       <li className='chat' onClick={onClick}>
-        <div>{name}</div>
+        <div>{chat.name}</div>
       </li>
     )
   }
@@ -15,7 +15,8 @@ class Chat extends React.Component {
 export default class ChatList extends React.Component {
   newChat = () => {
     let username = prompt("Username");
-    this.props.enterChatroom(username)
+    let chatID = this.props.createChatroom([username]);
+    this.props.enterChatroom(chatID);
   }
 
   render() {
@@ -23,22 +24,22 @@ export default class ChatList extends React.Component {
 
     let chatList = [];
     for (var key in chats) {
-      if (chats.hasOwnProperty(key)) {
+      if (chats.hasOwnProperty(key) && chats[key]) {
         chatList.push({
           key: key,
-          messages: chats[key],
+          chat: chats[key],
         });
       }
     }
 
     chatList.sort(function(a, b) {
-      if (!a.messages || a.messages.length === 0) {
+      if (!a.chat.messages || a.chat.messages.length === 0) {
         return -1;
       }
-      if (!b.messages || b.messages.length === 0) {
+      if (!b.chat.messages || b.chat.messages.length === 0) {
         return 1;
       }
-      return a.messages[a.messages.length-1].time - b.messages[b.messages.length-1].time;
+      return a.chat.messages[a.chat.messages.length-1].time - b.chat.messages[b.chat.messages.length-1].time;
     });
 
     return (
@@ -52,8 +53,8 @@ export default class ChatList extends React.Component {
           {
             chatList.map(chat => (
               <Chat
-                name={chat.key}
                 key={chat.key}
+                chat={chat}
                 onClick={() => enterChatroom(chat.key)}
                 />
             ))

@@ -28,7 +28,6 @@ p {
 }
 
 .chatlist-container .chatlist-header {
-  font-family: 'Pacifico', cursive;
   background-color: rgba(30, 228, 148, 0.7);
   color: #FFF;
   margin: 0;
@@ -40,6 +39,7 @@ p {
 }
 
 .chatlist-container .chatlist-header .title {
+  font-family: 'Pacifico', cursive;
 }
 
 .chatlist-container .chatlist-header .new {

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import uuid from 'uuid/v1';
 import './App.css';
 
 import ChatList from './ChatList';
@@ -7,14 +8,22 @@ import LoginBox from './LoginBox';
 
 import { newNKNClient, getNKNAddr } from './nkn';
 
+function genChatID() {
+  return uuid()
+}
+
+function genChatName(otherUsers) {
+  return otherUsers.join(', ');
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       username: null,
-      chatWith: null,
-      messages: {},
+      activeChatID: null,
+      chats: {},
     };
   }
 
@@ -31,21 +40,26 @@ class App extends Component {
 
     this.setState({
       username: username,
-      messages: {},
+      chats: {},
     });
   }
 
-  receiveMessage = (chat, username, message) => {
-    let messageList = this.state.messages[chat] || [];
+  receiveMessage = (chatID, username, message) => {
+    let chat = this.state.chats[chatID] || { users: [this.username, username] };
+    let messageList = chat.messages || [];
 
-    messageList.push({
+    messageList = messageList.concat({
       username: username,
       content: <p>{message}</p>,
       img: "http://i.imgur.com/Tj5DGiO.jpg",
     });
 
     this.setState({
-      messages: Object.assign(this.state.messages, { [chat]: messageList }),
+      chats: Object.assign(
+        {},
+        this.state.chats,
+        { [chatID]: Object.assign({}, chat, { messages: messageList }) }
+      ),
     });
   }
 
@@ -53,9 +67,26 @@ class App extends Component {
     this.nknClient.send(getNKNAddr(username), message);
   }
 
-  enterChatroom = (chat) => {
+  createChatroom = (otherUsers) => {
+    let chatID = genChatID();
+    let chat = {
+      name: genChatName(otherUsers),
+      users: otherUsers.concat(this.state.username),
+    };
+
+    // nkn: create chat msg
+    // bluzelle: create chat
+
     this.setState({
-      chatWith: chat,
+      chats: Object.assign({}, this.state.chats, { [chatID]: chat }),
+    });
+
+    return chatID;
+  }
+
+  enterChatroom = (chatID) => {
+    this.setState({
+      activeChatID: chatID,
     });
   }
 
@@ -65,19 +96,20 @@ class App extends Component {
         {
           this.state.username ?
           (
-            this.state.chatWith ?
+            this.state.activeChatID ?
             <Chatroom
+              chatID={this.state.activeChatID}
               myUsername={this.state.username}
-              friendUsername={this.state.chatWith}
-              messages={this.state.messages[this.state.chatWith] || []}
+              chat={this.state.chats[this.state.activeChatID] || []}
               receiveMessage={this.receiveMessage}
               sendMessage={this.sendMessage}
               leaveChatroom={() => this.enterChatroom(null)}
               />
             :
             <ChatList
-              chats={this.state.messages}
+              chats={this.state.chats}
               enterChatroom={this.enterChatroom}
+              createChatroom={this.createChatroom}
               />
           )
           :

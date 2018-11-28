@@ -1,10 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './App.css';
-
 import Message from './Message.js';
+import { newBluzelleClient } from './bluzelle';
 
 export default class Chatroom extends React.Component {
+  componentWillMount() {
+    this.bluzelleClient = newBluzelleClient(this.props.chatID);
+    this.bluzelleClient.connect();
+  }
+
+  componentWillUnmount() {
+    this.bluzelleClient.disconnect();
+  }
+
   componentDidMount() {
     this.scrollToBot();
   }
@@ -20,7 +29,7 @@ export default class Chatroom extends React.Component {
   submitMessage = (e) => {
     e.preventDefault();
 
-    let { receiveMessage, sendMessage, myUsername, friendUsername } = this.props;
+    let { receiveMessage, sendMessage, chatID, chat, myUsername } = this.props;
 
     let input = ReactDOM.findDOMNode(this.refs.msg);
 
@@ -28,26 +37,30 @@ export default class Chatroom extends React.Component {
       return;
     }
 
-    receiveMessage(friendUsername, myUsername, input.value);
+    receiveMessage(chatID, myUsername, input.value);
 
-    sendMessage(friendUsername, input.value)
+    chat.users.forEach((username) => {
+      if (username !== myUsername) {
+        sendMessage(username, input.value);
+      }
+    });
 
     input.value = "";
   }
 
   render() {
-    const { messages, myUsername, friendUsername, leaveChatroom } = this.props;
+    const { chatID, chat, myUsername, leaveChatroom } = this.props;
 
     return (
       <div className="chatroom">
         <span className="chatroom-header">
           <span className="back" onClick={leaveChatroom}>{'< Back'}</span>
-          <span className="chatname">{friendUsername}</span>
+          <span className="chatname">{chat.name}</span>
           <span className="empty"></span>
         </span>
         <ul className="messages" ref="messages">
           {
-            messages && messages.map((message, index) => (
+            chat.messages && chat.messages.map((message, index) => (
               <Message message={message} user={myUsername} key={index} />
             ))
           }
