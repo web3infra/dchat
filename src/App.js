@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import uuid from 'uuid/v1';
 import './App.css';
 
 import ChatList from './ChatList';
@@ -7,14 +6,8 @@ import Chatroom from './Chatroom';
 import LoginBox from './LoginBox';
 
 import { newNKNClient, getNKNAddr } from './nkn';
-
-function genChatID() {
-  return uuid()
-}
-
-function genChatName(otherUsers) {
-  return otherUsers.join(', ');
-}
+import { newBluzelleClient, writeToDB, getUserDatabaseID, getChatDatabaseID } from './bluzelle';
+import { genChatID, genMessageID } from './util';
 
 class App extends Component {
   constructor(props) {
@@ -34,9 +27,9 @@ class App extends Component {
 
     this.nknClient = newNKNClient(username);
     this.nknClient.on('message', (src, payload, payloadType) => {
-      let username = src.split('.')[0];
-      const data = JSON.parse(payload);
-      this.receiveMessage(username, username, data.content, data.contentType);
+      let data = JSON.parse(payload);
+      console.log(data);
+      this.receiveMessage(data.chatID, data.message);
     });
 
     this.setState({
@@ -45,16 +38,26 @@ class App extends Component {
     });
   }
 
-  receiveMessage = (chatID, username, message, contentType) => {
-    let chat = this.state.chats[chatID] || { users: [this.username, username] };
+  receiveMessage = (chatID, message) => {
+    let chat = this.state.chats[chatID];
+
+    if (message.contentType === 'newchat') {
+      if (!chat) {
+        chat = message.content;
+        this.setState({
+          chats: Object.assign(
+            {},
+            this.state.chats,
+            { [chatID]: chat }
+          ),
+        });
+      }
+      return
+    }
+
     let messageList = chat.messages || [];
 
-    messageList = messageList.concat({
-      username: username,
-      content: message,
-      contentType: contentType,
-      img: "http://i.imgur.com/Tj5DGiO.jpg",
-    });
+    messageList = messageList.concat(message);
 
     this.setState({
       chats: Object.assign(
@@ -72,18 +75,52 @@ class App extends Component {
   createChatroom = (otherUsers) => {
     let chatID = genChatID();
     let chat = {
-      name: genChatName(otherUsers),
       users: otherUsers.concat(this.state.username),
     };
 
-    // nkn: create chat msg
-    // bluzelle: create chat
+    writeToDB(getChatDatabaseID(chatID), 'users', JSON.stringify(chat.users));
+    writeToDB(getUserDatabaseID(this.state.username), chatID, '');
+
+    let message = {
+      content: chat,
+      contentType: "newchat",
+    };
+
+    otherUsers.forEach((username) => {
+      this.sendMessage(username, JSON.stringify({
+        chatID: chatID,
+        message: message,
+      }));
+      writeToDB(getUserDatabaseID(username), chatID, '');
+    });
 
     this.setState({
       chats: Object.assign({}, this.state.chats, { [chatID]: chat }),
     });
 
     return chatID;
+  }
+
+  createMessage = (chatID, chat, content, contentType) => {
+    let message = {
+      username: this.state.username,
+      content: content,
+      contentType: contentType,
+      timestamp: new Date().getTime(),
+    }
+
+    this.receiveMessage(chatID, message);
+
+    chat.users.forEach((username) => {
+      if (username !== this.state.username) {
+        this.sendMessage(username, JSON.stringify({
+          chatID: chatID,
+          message: message,
+        }));
+      }
+    });
+
+    writeToDB(getChatDatabaseID(chatID), genMessageID(), JSON.stringify(message));
   }
 
   enterChatroom = (chatID) => {
@@ -93,6 +130,9 @@ class App extends Component {
   }
 
   render() {
+    let chatID = this.state.activeChatID;
+    let chat = this.state.chats[chatID];
+
     return (
       <div className="App">
         {
@@ -102,9 +142,8 @@ class App extends Component {
             <Chatroom
               chatID={this.state.activeChatID}
               myUsername={this.state.username}
-              chat={this.state.chats[this.state.activeChatID] || []}
-              receiveMessage={this.receiveMessage}
-              sendMessage={this.sendMessage}
+              chat={chat}
+              createMessage={this.createMessage.bind(this, chatID, chat)}
               leaveChatroom={() => this.enterChatroom(null)}
               />
             :
@@ -112,6 +151,7 @@ class App extends Component {
               chats={this.state.chats}
               enterChatroom={this.enterChatroom}
               createChatroom={this.createChatroom}
+              myUsername={this.state.username}
               />
           )
           :

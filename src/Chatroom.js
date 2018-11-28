@@ -8,6 +8,7 @@ import { Image } from "@noia-network/sdk-react";
 import Dropzone from 'react-dropzone';
 import { add } from './lib/ipfsService';
 import './UploadFile.css';
+import { getChatName } from './util';
 
 export default class Chatroom extends React.Component {
   componentWillMount() {
@@ -31,10 +32,8 @@ export default class Chatroom extends React.Component {
     ReactDOM.findDOMNode(this.refs.messages).scrollTop = ReactDOM.findDOMNode(this.refs.messages).scrollHeight;
   }
 
-  submitMessage = (e) => {
+  submitText = (e) => {
     e.preventDefault();
-
-    let { receiveMessage, sendMessage, chatID, chat, myUsername } = this.props;
 
     let input = ReactDOM.findDOMNode(this.refs.msg);
 
@@ -42,30 +41,13 @@ export default class Chatroom extends React.Component {
       return;
     }
 
-    receiveMessage(chatID, myUsername, input.value, "text");
-
-    chat.users.forEach((username) => {
-      if (username !== myUsername) {
-        sendMessage(username, JSON.stringify({
-          content: input.value,
-          contentType: "text",
-        }));
-      }
-    });
+    this.props.createMessage(input.value, "text");
 
     input.value = "";
   }
 
   submitImage = (src) => {
-    let { receiveMessage, sendMessage, myUsername, chatID, chat } = this.props;
-
-    receiveMessage(chatID, myUsername, src, "image");
-
-    chat.users.forEach((username) => {
-      if (username !== myUsername) {
-        sendMessage(username, JSON.stringify({ content: src, contentType: "image" }));
-      }
-    });
+    this.props.createMessage(src, "image");
   }
 
   onDrop = (acceptedFiles) => {
@@ -99,7 +81,7 @@ export default class Chatroom extends React.Component {
       <div className="chatroom">
         <span className="chatroom-header">
           <span className="back" onClick={leaveChatroom}>{'< Back'}</span>
-          <span className="chatname">{chat.name}</span>
+          <span className="chatname">{getChatName(chat, myUsername)}</span>
           <span className="empty"></span>
         </span>
         <ul className="messages" ref="messages">
@@ -143,7 +125,7 @@ export default class Chatroom extends React.Component {
             </Dropzone>
           </div>
         </div>
-        <form className="input" onSubmit={(e) => this.submitMessage(e)}>
+        <form className="input" onSubmit={(e) => this.submitText(e)}>
           <input type="text" ref="msg" />
           <input type="submit" value="Submit" />
         </form>

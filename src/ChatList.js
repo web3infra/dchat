@@ -1,16 +1,6 @@
 import React from 'react';
 
-class Chat extends React.Component {
-  render() {
-    const { chat, onClick } = this.props;
-
-    return (
-      <li className='chat' onClick={onClick}>
-        <div>{chat.name}</div>
-      </li>
-    )
-  }
-}
+import { getChatName } from './util';
 
 export default class ChatList extends React.Component {
   newChat = () => {
@@ -20,14 +10,14 @@ export default class ChatList extends React.Component {
   }
 
   render() {
-    const { chats, enterChatroom } = this.props;
+    const { chats, enterChatroom, myUsername } = this.props;
 
     let chatList = [];
-    for (var key in chats) {
-      if (chats.hasOwnProperty(key) && chats[key]) {
+    for (var chatID in chats) {
+      if (chats.hasOwnProperty(chatID) && chats[chatID]) {
         chatList.push({
-          key: key,
-          chat: chats[key],
+          chatID: chatID,
+          chat: chats[chatID],
         });
       }
     }
@@ -51,12 +41,10 @@ export default class ChatList extends React.Component {
         </span>
         <ul className="chatlist">
           {
-            chatList.map(chat => (
-              <Chat
-                key={chat.key}
-                chat={chat}
-                onClick={() => enterChatroom(chat.key)}
-                />
+            chatList.map(item => (
+              <li className='chat' key={item.chatID} onClick={() => enterChatroom(item.chatID)}>
+                <div>{getChatName(item.chat, myUsername)}</div>
+              </li>
             ))
           }
         </ul>
