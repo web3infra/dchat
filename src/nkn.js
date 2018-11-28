@@ -1,4 +1,4 @@
-import nkn from 'nkn-client/dist/nkn.min.js';
+import nkn from 'nkn-client';
 
 const seedRpcServerAddr = 'http://104.196.247.255:30003';
 const privateKey = 'cd5fa29ed5b0e951f3d1bce5997458706186320f1dd89156a73d54ed752a7f37';
