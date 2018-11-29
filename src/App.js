@@ -21,55 +21,54 @@ class App extends Component {
     };
   }
 
+  loadChat = async (chatID) => {
+    let chatDatabase = newBluzelleClient(getChatDatabaseID(chatID));
+    await chatDatabase.connect();
+
+    let chat = {};
+
+    try {
+      chat.users = JSON.parse(await chatDatabase.read('users'))
+    } catch (e) {
+      console.error(e);
+    }
+
+    let allMessageID = await chatDatabase.keys();
+    let allMessageStr = await Promise.all(allMessageID.filter(
+      messageID => messageID !== "users"
+    ).map(
+      messageID => {
+        try {
+          return chatDatabase.read(messageID);
+        } catch (e) {
+          console.error(e);
+          return null;
+        }
+      }
+    ));
+
+    chatDatabase.disconnect();
+
+    chat.messages = allMessageStr.filter(
+      messageStr => messageStr && messageStr.length > 0
+    ).map(
+      messageStr => JSON.parse(messageStr)
+    );
+
+    chat.messages.sort((a, b) => (a.timestamp - b.timestamp));
+
+    this.setState({
+      chats: Object.assign({}, this.state.chats, { [chatID]: chat }),
+    });
+  }
+
   fetchHistory = async (username) => {
     let userDatabaseID = getUserDatabaseID(username);
     let allChatID = await getAllKeys(userDatabaseID);
-    let chats = {};
 
     console.log("User database ID:", userDatabaseID);
 
-    allChatID.forEach(async (chatID) => {
-      let chatDatabase = newBluzelleClient(getChatDatabaseID(chatID));
-      await chatDatabase.connect();
-
-      let chat = {};
-
-      try {
-        chat.users = JSON.parse(await chatDatabase.read('users'))
-      } catch (e) {
-        console.error(e);
-      }
-
-      let allMessageID = await chatDatabase.keys();
-      let allMessageStr = await Promise.all(allMessageID.filter(
-        messageID => messageID !== "users"
-      ).map(
-        messageID => {
-          try {
-            return chatDatabase.read(messageID);
-          } catch (e) {
-            console.error(e);
-            return null;
-          }
-        }
-      ));
-
-      chatDatabase.disconnect();
-
-      chat.messages = allMessageStr.filter(
-        messageStr => messageStr && messageStr.length > 0
-      ).map(
-        messageStr => JSON.parse(messageStr)
-      );
-
-      chat.messages.sort((a, b) => (a.timestamp - b.timestamp));
-
-      chats[chatID] = chat;
-
-      this.setState({
-        chats: Object.assign({}, this.state.chats, chats),
-      });
-    });
+    allChatID.forEach(this.loadChat);
   }
 
   componentWillUnmount() {
@@ -100,7 +99,7 @@ class App extends Component {
     this.setState({ username: username });
   }
 
-  receiveMessage = (chatID, message) => {
+  receiveMessage = async (chatID, message) => {
     let chat = this.state.chats[chatID];
 
     if (message.contentType === 'newchat') {
@@ -110,7 +109,14 @@ class App extends Component {
           chats: Object.assign({}, this.state.chats, { [chatID]: chat }),
         });
       }
-      return
+      return;
+    }
+
+    if (!chat) {
+      chat = await this.loadChat(chatID);
+      if (!chat) {
+        return;
+      }
     }
 
     let messageList = chat.messages || [];
