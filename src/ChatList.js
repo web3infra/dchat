@@ -2,6 +2,42 @@ import React from 'react';
 
 import { getChatName } from './util';
 
+const Chat = ({ chat, myUsername, onClick }) => {
+  let lastMessage, lastActiveTimeText, previewText;
+  if (chat.messages && chat.messages.length) {
+    lastMessage = chat.messages[chat.messages.length-1];
+
+    let lastActiveTime = new Date(lastMessage.timestamp);
+    if (lastActiveTime.toDateString() === new Date().toDateString()) {
+      lastActiveTimeText = lastActiveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    } else {
+      lastActiveTimeText = lastActiveTime.toLocaleDateString();
+    }
+
+    previewText = lastMessage.content;
+    if (lastMessage.users && lastMessage.users.length > 2) {
+      previewText = lastMessage.username + ': ' + previewText;
+    }
+  }
+
+  return (
+    <li className='chat' onClick={onClick}>
+      <div className='chat-info'>
+        <div className='chat-name'>
+          {getChatName(chat, myUsername)}
+        </div>
+        <div className='chat-info-fill' />
+        <div className='chat-time'>
+          {lastActiveTimeText}
+        </div>
+      </div>
+      <div className='chat-preview'>
+        {previewText}
+      </div>
+    </li>
+  )
+};
+
 export default class ChatList extends React.Component {
   newChat = () => {
     let usernamesStr = prompt('Usernames separated by comma');
@@ -51,9 +87,12 @@ export default class ChatList extends React.Component {
         <ul className="chatlist">
           {
             chatList.map(item => (
-              <li className='chat' key={item.chatID} onClick={() => enterChatroom(item.chatID)}>
-                <div>{getChatName(item.chat, myUsername)}</div>
-              </li>
+              <Chat
+                key={item.chatID}
+                chat={item.chat}
+                myUsername={myUsername}
+                onClick={() => enterChatroom(item.chatID)}
+                />
             ))
           }
         </ul>

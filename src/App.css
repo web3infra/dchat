@@ -30,14 +30,16 @@ p {
 .chatlist-container {
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  /* background-color: rgba(0, 0, 0, 0.7); */
   border-radius: 5pt;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   box-shadow: 0 0 8pt 0 rgba(0, 0, 0, 0.3);
 }
 
 .chatlist-container .chatlist-header {
-  background-color: rgba(30, 228, 148, 0.7);
+  background-color: rgb(100, 180, 245);
   color: #fff;
   margin: 0;
   height: 40pt;
@@ -65,25 +67,54 @@ p {
 }
 
 .chatlist-container .chatlist {
+  flex: 1;
   box-sizing: border-box;
-  padding: 0 10pt;
-  margin: 10pt 0 0;
-  height: 90%;
+  padding: 0;
+  margin: 0;
   overflow-y: scroll;
 }
 
 .chatlist-container .chatlist .chat {
-  background: rgba(255, 255, 255, 0.8);
+  background: #fff;
   list-style: none;
   cursor: pointer;
-  padding: 5pt 13pt;
+  padding: 10pt 15pt;
+  border-bottom: 1pt solid rgba(0, 0, 0, 0.3);
+}
+
+.chatlist-container .chatlist .chat .chat-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chatlist-container .chatlist .chat .chat-info .chat-name {
+  text-align: left;
   font-size: 16pt;
+}
+
+.chatlist-container .chatlist .chat .chat-info .chat-info-fill {
+  flex: 1;
+}
+
+.chatlist-container .chatlist .chat .chat-info .chat-time {
+  text-align: right;
+  font-size: 14pt;
+  opacity: 0.4;
+}
+
+.chatlist-container .chatlist .chat .chat-preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14pt;
+  opacity: 0.4;
+  margin-top: 5pt;
 }
 
 .chatroom {
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgb(36, 41, 45);
   border-radius: 5pt;
   overflow: hidden;
   box-shadow: 0 0 8pt 0 rgba(0, 0, 0, 0.3);
@@ -92,7 +123,7 @@ p {
 }
 
 .chatroom .chatroom-header {
-  background-color: rgba(30, 228, 148, 0.7);
+  background-color: rgb(100, 180, 245);
   color: #fff;
   margin: 0;
   height: 40pt;
@@ -124,7 +155,8 @@ p {
 .chatroom .messages {
   box-sizing: border-box;
   padding: 0 20pt;
-  margin: 10pt 0 0;
+  margin-top: 0;
+  margin-bottom: 10pt;
   overflow-y: scroll;
   flex: 1;
 }
@@ -174,16 +206,16 @@ p {
 .chatroom .input {
   height: 40pt;
   width: 100%;
-  background: rgba(30, 228, 148, 0.7);
+  background: rgb(100, 180, 245);
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
 .chatroom .input input[type="text"] {
-  background: rgba(255, 255, 255, 0.5);
+  /* background: rgba(255, 255, 255, 0.5); */
   outline: 0;
-  border: 1pt solid #1ee494;
+  border: 1pt solid #fff;
   border-top-left-radius: 5pt;
   border-bottom-left-radius: 5pt;
   margin-left: 5pt;
@@ -195,7 +227,7 @@ p {
 
 .chatroom .input input[type="submit"] {
   background: transparent;
-  border: 1pt solid #1ee494;
+  border: 1pt solid #fff;
   height: 30pt;
   width: 70pt;
   font-size: 14pt;
