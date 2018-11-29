@@ -63,19 +63,19 @@ export default class Chatroom extends React.Component {
             connectionTypes: [
               "webrtc"
             ],
-            src: `http://ipfs.portal.network/ipfs/${this.state.ipfsHash}`
+            src: `https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`
           }))
         }
         ws.onmessage = (res) => {
           const response = JSON.parse(res.data);
           if (response.status === 200 && response.data.peers.length > 0) {
             this.setState({ loading: false });
-            this.submitImage(`http://ipfs.portal.network/ipfs/${this.state.ipfsHash}`);
+            this.submitImage(`https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`);
           } else {
             setTimeout(() => {
               ws.send(JSON.stringify({
                 connectionTypes: ["webrtc"],
-                src: `http://ipfs.portal.network/ipfs/${this.state.ipfsHash}`
+                src: `https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`
               }))
             }, 7 * 1000)
           }
@@ -107,29 +107,29 @@ export default class Chatroom extends React.Component {
         </ul>
         <div className="emojis">
           <Image
-            src="http://ipfs.portal.network/ipfs/QmX7cmFNPkgcr2Uy8QdvLx1dqjzqSadkhsTpnk7X2gQZJX"
+            src="https://ipfs.io/ipfs/QmX7cmFNPkgcr2Uy8QdvLx1dqjzqSadkhsTpnk7X2gQZJX"
             loaderComponent={<div className="loader emojis-thumbnail" />}
-            onClick={() => this.submitImage("http://ipfs.portal.network/ipfs/QmX7cmFNPkgcr2Uy8QdvLx1dqjzqSadkhsTpnk7X2gQZJX")}
+            onClick={() => this.submitImage("https://ipfs.io/ipfs/QmX7cmFNPkgcr2Uy8QdvLx1dqjzqSadkhsTpnk7X2gQZJX")}
           />
           <Image
-            src="http://ipfs.portal.network/ipfs/Qme46TYr2YyDNe5ZSnxEwAeEdQUsEENTBDEUhp7HwcEXiT"
+            src="https://ipfs.io/ipfs/Qme46TYr2YyDNe5ZSnxEwAeEdQUsEENTBDEUhp7HwcEXiT"
             loaderComponent={<div className="loader emojis-thumbnail" />}
-            onClick={() => this.submitImage("http://ipfs.portal.network/ipfs/Qme46TYr2YyDNe5ZSnxEwAeEdQUsEENTBDEUhp7HwcEXiT")}
+            onClick={() => this.submitImage("https://ipfs.io/ipfs/Qme46TYr2YyDNe5ZSnxEwAeEdQUsEENTBDEUhp7HwcEXiT")}
           />
           <Image
-            src="http://ipfs.portal.network/ipfs/QmbzA9YdJTgUTrruBtt2gXWRgfDQhJnhHwCRbbqZ4vyGVg"
+            src="https://ipfs.io/ipfs/QmbzA9YdJTgUTrruBtt2gXWRgfDQhJnhHwCRbbqZ4vyGVg"
             loaderComponent={<div className="loader emojis-thumbnail" />}
-            onClick={() => this.submitImage("http://ipfs.portal.network/ipfs/QmbzA9YdJTgUTrruBtt2gXWRgfDQhJnhHwCRbbqZ4vyGVg")}
+            onClick={() => this.submitImage("https://ipfs.io/ipfs/QmbzA9YdJTgUTrruBtt2gXWRgfDQhJnhHwCRbbqZ4vyGVg")}
           />
           <Image
-            src="http://ipfs.portal.network/ipfs/QmX7sjMLQhQ9t3afvJ36bMfugV792KxatqVwKCwEWaS9oa"
+            src="https://ipfs.io/ipfs/QmX7sjMLQhQ9t3afvJ36bMfugV792KxatqVwKCwEWaS9oa"
             loaderComponent={<div className="loader emojis-thumbnail" />}
-            onClick={() => this.submitImage("http://ipfs.portal.network/ipfs/QmX7sjMLQhQ9t3afvJ36bMfugV792KxatqVwKCwEWaS9oa")}
+            onClick={() => this.submitImage("https://ipfs.io/ipfs/QmX7sjMLQhQ9t3afvJ36bMfugV792KxatqVwKCwEWaS9oa")}
           />
           <Image
-            src="http://ipfs.portal.network/ipfs/QmYPDpA1NCNDnwnAVoH1iDvvnCyZ6qgErHyJYKfF4mDGUQ"
+            src="https://ipfs.io/ipfs/QmYPDpA1NCNDnwnAVoH1iDvvnCyZ6qgErHyJYKfF4mDGUQ"
             loaderComponent={<div className="loader emojis-thumbnail" />}
-            onClick={() => this.submitImage("http://ipfs.portal.network/ipfs/QmYPDpA1NCNDnwnAVoH1iDvvnCyZ6qgErHyJYKfF4mDGUQ")}
+            onClick={() => this.submitImage("https://ipfs.io/ipfs/QmYPDpA1NCNDnwnAVoH1iDvvnCyZ6qgErHyJYKfF4mDGUQ")}
           />
         </div>
         <div className="file_upload">
