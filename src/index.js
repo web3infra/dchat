@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
 
 import { NoiaClient, NoiaClientContainer } from "@noia-network/sdk";
 // eslint-disable-next-line
@@ -20,4 +19,3 @@ NoiaClientContainer.initialize(
 );
 
 ReactDOM.render(<App />, document.getElementById('root'));
-registerServiceWorker();
