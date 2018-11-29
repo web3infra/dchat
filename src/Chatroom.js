@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './App.css';
 import Message from './Message.js';
 
-import { Image } from "@noia-network/sdk-react";
+import CachedImage from "./Image";
 import Dropzone from 'react-dropzone';
 import { add } from './lib/ipfsService';
 import './UploadFile.css';
@@ -106,27 +106,27 @@ export default class Chatroom extends React.Component {
           }
         </ul>
         <div className="emojis">
-          <Image
+          <CachedImage
             src="https://ipfs.io/ipfs/QmX7cmFNPkgcr2Uy8QdvLx1dqjzqSadkhsTpnk7X2gQZJX"
             loaderComponent={<div className="loader emojis-thumbnail" />}
             onClick={() => this.submitImage("https://ipfs.io/ipfs/QmX7cmFNPkgcr2Uy8QdvLx1dqjzqSadkhsTpnk7X2gQZJX")}
           />
-          <Image
+          <CachedImage
             src="https://ipfs.io/ipfs/Qme46TYr2YyDNe5ZSnxEwAeEdQUsEENTBDEUhp7HwcEXiT"
             loaderComponent={<div className="loader emojis-thumbnail" />}
             onClick={() => this.submitImage("https://ipfs.io/ipfs/Qme46TYr2YyDNe5ZSnxEwAeEdQUsEENTBDEUhp7HwcEXiT")}
           />
-          <Image
+          <CachedImage
             src="https://ipfs.io/ipfs/QmbzA9YdJTgUTrruBtt2gXWRgfDQhJnhHwCRbbqZ4vyGVg"
             loaderComponent={<div className="loader emojis-thumbnail" />}
             onClick={() => this.submitImage("https://ipfs.io/ipfs/QmbzA9YdJTgUTrruBtt2gXWRgfDQhJnhHwCRbbqZ4vyGVg")}
           />
-          <Image
+          <CachedImage
             src="https://ipfs.io/ipfs/QmX7sjMLQhQ9t3afvJ36bMfugV792KxatqVwKCwEWaS9oa"
             loaderComponent={<div className="loader emojis-thumbnail" />}
             onClick={() => this.submitImage("https://ipfs.io/ipfs/QmX7sjMLQhQ9t3afvJ36bMfugV792KxatqVwKCwEWaS9oa")}
           />
-          <Image
+          <CachedImage
             src="https://ipfs.io/ipfs/QmYPDpA1NCNDnwnAVoH1iDvvnCyZ6qgErHyJYKfF4mDGUQ"
             loaderComponent={<div className="loader emojis-thumbnail" />}
             onClick={() => this.submitImage("https://ipfs.io/ipfs/QmYPDpA1NCNDnwnAVoH1iDvvnCyZ6qgErHyJYKfF4mDGUQ")}

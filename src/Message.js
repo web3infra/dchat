@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image } from "@noia-network/sdk-react";
+import CachedImage from './Image';
 
 const Avatar = ({ username }) => (
   <div className="avatar">
@@ -13,7 +13,7 @@ const Message = ({ message, myUsername }) => (
     {
       message.contentType === "image" ?
       <div className="emoji">
-        <Image
+        <CachedImage
           src={message.content}
           loaderComponent={<div className="loader" />}
           />
