@@ -67,7 +67,7 @@ class App extends Component {
       chats[chatID] = chat;
 
       this.setState({
-        chats: chats,
+        chats: Object.assign({}, this.state.chats, chats),
       });
     });
   }
@@ -81,8 +81,18 @@ class App extends Component {
   login = (username) => {
     this.fetchHistory(username);
 
-    this.nknClient = newNKNClient(username);
-    this.nknClient.on('message', (src, payload, payloadType) => {
+    let nknClient = newNKNClient(username);
+
+    nknClient.on('connect', () => {
+      this.nknClient = nknClient;
+      if (this.messageQueue && this.messageQueue.length > 0) {
+        this.messageQueue.forEach((item) => {
+          this.nknClient.send(item.addrs, item.message);
+        });
+      }
+    });
+
+    nknClient.on('message', (src, payload, payloadType) => {
       let data = JSON.parse(payload);
       this.receiveMessage(data.chatID, data.message);
     });
@@ -97,11 +107,7 @@ class App extends Component {
       if (!chat) {
         chat = message.content;
         this.setState({
-          chats: Object.assign(
-            {},
-            this.state.chats,
-            { [chatID]: chat }
-          ),
+          chats: Object.assign({}, this.state.chats, { [chatID]: chat }),
         });
       }
       return
@@ -120,8 +126,22 @@ class App extends Component {
     });
   }
 
-  sendMessage = (username, message) => {
-    this.nknClient.send(getNKNAddr(username), message);
+  sendMessage = (usernames, message) => {
+    if (!Array.isArray(usernames)) {
+      usernames = [usernames];
+    }
+
+    let nknAddrs = usernames.map(username => getNKNAddr(username));
+
+    if (this.nknClient) {
+      this.nknClient.send(nknAddrs, message);
+    } else {
+      this.messageQueue = this.messageQueue || [];
+      this.messageQueue.push({
+        addrs: nknAddrs,
+        message: message,
+      });
+    }
   }
 
   createChatroom = (otherUsers) => {
@@ -138,11 +158,12 @@ class App extends Component {
       contentType: "newchat",
     };
 
+    this.sendMessage(otherUsers, JSON.stringify({
+      chatID: chatID,
+      message: message,
+    }));
+
     otherUsers.forEach((username) => {
-      this.sendMessage(username, JSON.stringify({
-        chatID: chatID,
-        message: message,
-      }));
       writeToDB(getUserDatabaseID(username), chatID, '');
     });
 
@@ -163,14 +184,13 @@ class App extends Component {
 
     this.receiveMessage(chatID, message);
 
-    chat.users.forEach((username) => {
-      if (username !== this.state.username) {
-        this.sendMessage(username, JSON.stringify({
-          chatID: chatID,
-          message: message,
-        }));
-      }
-    });
+    this.sendMessage(
+      chat.users.filter(username => username !== this.state.username),
+      JSON.stringify({
+        chatID: chatID,
+        message: message,
+      })
+    );
 
     if (this.state.activeChatID === chatID && this.state.activeChatDatabase) {
       this.state.activeChatDatabase.create(genMessageID(), JSON.stringify(message));
@@ -201,29 +221,31 @@ class App extends Component {
     let chat = this.state.chats[chatID];
 
     return (
-      <div className="App">
-        {
-          this.state.username ?
-          (
-            this.state.activeChatID ?
-            <Chatroom
-              chatID={this.state.activeChatID}
-              myUsername={this.state.username}
-              chat={chat}
-              createMessage={this.createMessage.bind(this, chatID, chat)}
-              leaveChatroom={() => this.enterChatroom(null)}
-              />
+      <div className="app">
+        <div className="app-container">
+          {
+            this.state.username ?
+            (
+              this.state.activeChatID ?
+              <Chatroom
+                chatID={this.state.activeChatID}
+                myUsername={this.state.username}
+                chat={chat}
+                createMessage={this.createMessage.bind(this, chatID, chat)}
+                leaveChatroom={() => this.enterChatroom(null)}
+                />
+              :
+              <ChatList
+                chats={this.state.chats}
+                enterChatroom={this.enterChatroom}
+                createChatroom={this.createChatroom}
+                myUsername={this.state.username}
+                />
+            )
             :
-            <ChatList
-              chats={this.state.chats}
-              enterChatroom={this.enterChatroom}
-              createChatroom={this.createChatroom}
-              myUsername={this.state.username}
-              />
-          )
-          :
-          <LoginBox login={this.login}/>
-        }
+            <LoginBox login={this.login}/>
+          }
+        </div>
       </div>
     );
   }

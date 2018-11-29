@@ -10,33 +10,28 @@ $blue_theme: #70a1ff;
 // customized
 .BNS-formbox {
     display: flex;
-    border: 1px solid #70a1ff;
+    border: 1pt solid #70a1ff;
     justify-content: space-between;
 }
 .login-input.fix-BNS-input {
-    border: 0px;
-    @media screen and (max-width: 320px) {
-        width: 90%;
-        padding-right: 0px;
-    }
+    border: 0pt;
+    width: 90%;
+    padding-right: 0pt;
 }
 .BNS-option {
     display: flex;
     align-items: center;
-    padding-right: 5%;   
-    @media screen and (max-width: 320px) {
-        padding-right: 5%;
-    }
+    padding-right: 5%;
 }
 .LoginFooter {
-    padding-top: 30px;
+    padding-top: 30pt;
     display: flex;
     justify-content: center;
 
     img {
-        width: 30px;
+        width: 30pt;
         height: 100%;
-        padding-left: 5px;
+        padding-left: 5pt;
     }
 }
 
@@ -57,10 +52,10 @@ $blue_theme: #70a1ff;
     display: flex;
     max-width: 24em;
     min-width: 21em;
-    height: 35px;
-    -webkit-box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
-    box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
-    margin-bottom: 30px;
+    height: 35pt;
+    -webkit-box-shadow: 0pt 0pt 20pt 0pt rgba(15, 15, 15, 0.2);
+    box-shadow: 0pt 0pt 20pt 0pt rgba(15, 15, 15, 0.2);
+    margin-bottom: 30pt;
     align-items: center;
     transition: visibility 0.5s ease-out;
 }
@@ -76,17 +71,16 @@ $blue_theme: #70a1ff;
 //Currently Selected Controller
 .selected-controller {
     transition: border 0.5s ease-out;
-    border-bottom: 2px solid $blue_theme;
+    border-bottom: 2pt solid $blue_theme;
 }
 
 .box-container {
     display: flex;
     flex-direction: column;
-    max-width: 24em;
-    min-width: 14em;
-    box-shadow: 0px 0px 20px 0px rgba(15, 15, 15, 0.2);
-    border-radius: 6px;
-    padding: 24px;
+    width: 75%;
+    box-shadow: 0pt 0pt 20pt 0pt rgba(15, 15, 15, 0.2);
+    border-radius: 6pt;
+    padding: 24pt;
 }
 
 .inner-container {
@@ -100,13 +94,13 @@ $blue_theme: #70a1ff;
 //Header
 .header {
     text-align: center;
-    padding: 5px;
-    margin-bottom: 17px;
-    /* margin-left: 35px; */
-    /* margin-right: 35px; */
+    padding: 5pt;
+    margin-bottom: 17pt;
+    /* margin-left: 35pt; */
+    /* margin-right: 35pt; */
     font-family: Ozxgen, sans-serif;
-    font-size: 22px;
-    border-bottom: 2px solid $blue_theme;
+    font-size: 22pt;
+    border-bottom: 2pt solid $blue_theme;
 }
 
 .box {
@@ -118,58 +112,58 @@ $blue_theme: #70a1ff;
 .input-group {
     display: flex;
     flex-direction: column;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 5pt;
+    margin-bottom: 5pt;
 }
 
 //Label
 .login-label {
     font-family: Oxygen, sans-serif;
-    font-size: 20px;
+    font-size: 20pt;
     font-weight: 600;
-    padding-left: 5px;
+    padding-left: 5pt;
 }
 
 //Input
 .login-input {
-    height: 2.1em;
-    border-radius: 3px;
-    border: 1px solid $blue_theme;
+    height: 30pt;
+    border-radius: 3pt;
+    border: 1pt solid $blue_theme;
     transition: border 0.4s ease-out;
-    padding: 8px;
+    padding: 8pt;
     font-family: Oxygen, sans-serif;
-    font-size: 19px;
+    font-size: 19pt;
     color: #3e3e42;
     background: rgba(15, 15, 15, 0.01);
 }
 
 .login-input:hover {
-    border: 2px solid $blue_theme;
+    border: 2pt solid $blue_theme;
 }
 
 .login-input:focus {
-    border: 2px solid #6565e7;
-    box-shadow: 0px 0px 20px rgba(15, 15, 15, 0.2);
+    border: 2pt solid #6565e7;
+    box-shadow: 0pt 0pt 20pt rgba(15, 15, 15, 0.2);
 }
 
 //Input Placeholder
 .login-input::placeholder {
     font-family: Oxygen, sans-serif;
-    font-size: 16px; //color: rgba(46, 213, 116, 0.839);
+    font-size: 16pt; //color: rgba(46, 213, 116, 0.839);
     color: rgba(15, 15, 15, 0.4);
 }
 
 .login-btn {
-    padding: 2px 30px;
+    padding: 2pt 30pt;
     /* background-color: #417cef; */
     border: 0;
-    font-size: 18px;
-    border-radius: 3px;
+    font-size: 18pt;
+    border-radius: 3pt;
     font-family: Oxygen, sans-serif;
     background-color: rgba(15, 15, 15, 0.03);
-    margin-top: 20px;
-    // border: 2px solid #417cef;
-    box-shadow: 0 8px 50px -6px rgba(84,84,120,.26);
+    margin-top: 20pt;
+    // border: 2pt solid #417cef;
+    box-shadow: 0 8pt 50pt -6pt rgba(84,84,120,.26);
     transition: background-color 0.3s ease-out;
     cursor: pointer;
 }
@@ -182,18 +176,18 @@ $blue_theme: #70a1ff;
 
 .danger-error {
     color: #e74c3c;
-    font-size: 16px;
+    font-size: 16pt;
 }
 
 //Password
 .password-state {
     display: flex;
     flex-direction: row;
-    margin-top: 20px;
+    margin-top: 20pt;
 }
 
 .pwd {
-    height: 6px;
+    height: 6pt;
     flex: 1;
     visibility: hidden;
 }

@@ -1,15 +1,25 @@
 import React from 'react';
 import { Image } from "@noia-network/sdk-react";
 
-const Message = ({ message, user }) => (
-  <li className={`${message.contentType === "image" ? "message message-image" : "message"} ${user === message.username ? "right" : "left"}`}>
-    {user !== message.username
-      && <img className="avatar" src="http://i.imgur.com/Tj5DGiO.jpg" alt={`${message.username}'s profile pic`} />
+const Avatar = ({ username }) => (
+  <div className="avatar">
+    <p className="avatar-letter">{username.charAt(0).toUpperCase() || '?'}</p>
+  </div>
+)
+
+const Message = ({ message, myUsername }) => (
+  <li className={`${message.contentType === "image" ? "message message-image" : "message"} ${message.username === myUsername ? "right" : "left"}`}>
+    { message.username !== myUsername && <Avatar username={message.username} /> }
+    {
+      message.contentType === "image" ?
+      <div className="emoji">
+        <Image
+          src={message.content}
+          loaderComponent={<div className="loader" />}
+          />
+      </div> :
+      <p>{message.content}</p>
     }
-    {message.contentType === "image" ? <div className="emoji"><Image
-      src={message.content}
-      loaderComponent={<div className="loader" />}
-    /></div> : <p>{message.content}</p>}
   </li>
 );
 

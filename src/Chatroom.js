@@ -139,7 +139,7 @@ export default class Chatroom extends React.Component {
                 <p>Uploading file...</p>
               }
               {(this.state == null || !this.state.loading) &&
-                <p>Try dropping file here, or click to select file to upload.</p>
+                <p>Drop file here, or click to select file to upload.</p>
               }
             </Dropzone>
           </div>
