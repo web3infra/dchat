@@ -120,8 +120,11 @@ class App extends Component {
     });
   }
 
-  sendMessage = (username, message) => {
-    this.nknClient.send(getNKNAddr(username), message);
+  sendMessage = (usernames, message) => {
+    if (!Array.isArray(usernames)) {
+      usernames = [usernames];
+    }
+    this.nknClient.send(usernames.map(username => getNKNAddr(username)), message);
   }
 
   createChatroom = (otherUsers) => {
@@ -138,11 +141,12 @@ class App extends Component {
       contentType: "newchat",
     };
 
+    this.sendMessage(otherUsers, JSON.stringify({
+      chatID: chatID,
+      message: message,
+    }));
+
     otherUsers.forEach((username) => {
-      this.sendMessage(username, JSON.stringify({
-        chatID: chatID,
-        message: message,
-      }));
       writeToDB(getUserDatabaseID(username), chatID, '');
     });
 
@@ -163,14 +167,13 @@ class App extends Component {
 
     this.receiveMessage(chatID, message);
 
-    chat.users.forEach((username) => {
-      if (username !== this.state.username) {
-        this.sendMessage(username, JSON.stringify({
-          chatID: chatID,
-          message: message,
-        }));
-      }
-    });
+    this.sendMessage(
+      chat.users.filter(username => username !== this.state.username),
+      JSON.stringify({
+        chatID: chatID,
+        message: message,
+      })
+    );
 
     if (this.state.activeChatID === chatID && this.state.activeChatDatabase) {
       this.state.activeChatDatabase.create(genMessageID(), JSON.stringify(message));
