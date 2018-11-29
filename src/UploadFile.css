@@ -3,7 +3,7 @@
     .file_upload .uploader > div {
       cursor: pointer;
       width: 100% !important;
-      height: 75pt !important; }
+      height: 50pt !important; }
     .file_upload .uploader > div > p {
       color: #ffffff;
       padding: 15pt;

@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-import "@noia-network/sdk/dist/vendors~main";
 import { NoiaClient, NoiaClientContainer } from "@noia-network/sdk";
 // eslint-disable-next-line
 import * as PieceWorker from "worker-loader!@noia-network/sdk/worker";

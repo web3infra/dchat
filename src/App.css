@@ -210,8 +210,8 @@ p {
   position: relative;
   box-sizing: border-box;
   display: inline-block;
-  height: 32pt;
-  width: 32pt;
+  height: 50pt;
+  width: 50pt;
   animation: spinner-reveal 1.4s steps(1, end) infinite,
     spinner-rotation 1.4s ease-in-out infinite;
   clip-path: inset(0 0 0 50%);
