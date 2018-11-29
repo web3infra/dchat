@@ -67,7 +67,7 @@ class App extends Component {
       chats[chatID] = chat;
 
       this.setState({
-        chats: chats,
+        chats: Object.assign({}, this.state.chats, chats),
       });
     });
   }
@@ -81,8 +81,18 @@ class App extends Component {
   login = (username) => {
     this.fetchHistory(username);
 
-    this.nknClient = newNKNClient(username);
-    this.nknClient.on('message', (src, payload, payloadType) => {
+    let nknClient = newNKNClient(username);
+
+    nknClient.on('connect', () => {
+      this.nknClient = nknClient;
+      if (this.messageQueue && this.messageQueue.length > 0) {
+        this.messageQueue.forEach((item) => {
+          this.nknClient.send(item.addrs, item.message);
+        });
+      }
+    });
+
+    nknClient.on('message', (src, payload, payloadType) => {
       let data = JSON.parse(payload);
       this.receiveMessage(data.chatID, data.message);
     });
@@ -97,11 +107,7 @@ class App extends Component {
       if (!chat) {
         chat = message.content;
         this.setState({
-          chats: Object.assign(
-            {},
-            this.state.chats,
-            { [chatID]: chat }
-          ),
+          chats: Object.assign({}, this.state.chats, { [chatID]: chat }),
         });
       }
       return
@@ -124,7 +130,18 @@ class App extends Component {
     if (!Array.isArray(usernames)) {
       usernames = [usernames];
     }
-    this.nknClient.send(usernames.map(username => getNKNAddr(username)), message);
+
+    let nknAddrs = usernames.map(username => getNKNAddr(username));
+
+    if (this.nknClient) {
+      this.nknClient.send(nknAddrs, message);
+    } else {
+      this.messageQueue = this.messageQueue || [];
+      this.messageQueue.push({
+        addrs: nknAddrs,
+        message: message,
+      });
+    }
   }
 
   createChatroom = (otherUsers) => {
