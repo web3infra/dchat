@@ -63,19 +63,19 @@ export default class Chatroom extends React.Component {
             connectionTypes: [
               "webrtc"
             ],
-            src: `https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`
+            src: `http://ipfs.portal.network/ipfs/${this.state.ipfsHash}`
           }))
         }
         ws.onmessage = (res) => {
           const response = JSON.parse(res.data);
           if (response.status === 200 && response.data.peers.length > 0) {
             this.setState({ loading: false });
-            this.submitImage(`https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`);
+            this.submitImage(`http://ipfs.portal.network/ipfs/${this.state.ipfsHash}`);
           } else {
             setTimeout(() => {
               ws.send(JSON.stringify({
                 connectionTypes: ["webrtc"],
-                src: `https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`
+                src: `http://ipfs.portal.network/ipfs/${this.state.ipfsHash}`
               }))
             }, 7 * 1000)
           }
