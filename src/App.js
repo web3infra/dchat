@@ -204,29 +204,31 @@ class App extends Component {
     let chat = this.state.chats[chatID];
 
     return (
-      <div className="App">
-        {
-          this.state.username ?
-          (
-            this.state.activeChatID ?
-            <Chatroom
-              chatID={this.state.activeChatID}
-              myUsername={this.state.username}
-              chat={chat}
-              createMessage={this.createMessage.bind(this, chatID, chat)}
-              leaveChatroom={() => this.enterChatroom(null)}
-              />
+      <div className="app">
+        <div className="app-container">
+          {
+            this.state.username ?
+            (
+              this.state.activeChatID ?
+              <Chatroom
+                chatID={this.state.activeChatID}
+                myUsername={this.state.username}
+                chat={chat}
+                createMessage={this.createMessage.bind(this, chatID, chat)}
+                leaveChatroom={() => this.enterChatroom(null)}
+                />
+              :
+              <ChatList
+                chats={this.state.chats}
+                enterChatroom={this.enterChatroom}
+                createChatroom={this.createChatroom}
+                myUsername={this.state.username}
+                />
+            )
             :
-            <ChatList
-              chats={this.state.chats}
-              enterChatroom={this.enterChatroom}
-              createChatroom={this.createChatroom}
-              myUsername={this.state.username}
-              />
-          )
-          :
-          <LoginBox login={this.login}/>
-        }
+            <LoginBox login={this.login}/>
+          }
+        </div>
       </div>
     );
   }
