@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './App.css';
 import Message from './Message.js';
-import { newBluzelleClient } from './bluzelle';
 
 import { Image } from "@noia-network/sdk-react";
 import Dropzone from 'react-dropzone';
@@ -11,15 +10,6 @@ import './UploadFile.css';
 import { getChatName } from './util';
 
 export default class Chatroom extends React.Component {
-  componentWillMount() {
-    this.bluzelleClient = newBluzelleClient(this.props.chatID);
-    this.bluzelleClient.connect();
-  }
-
-  componentWillUnmount() {
-    this.bluzelleClient.disconnect();
-  }
-
   componentDidMount() {
     this.scrollToBot();
   }
@@ -64,8 +54,30 @@ export default class Chatroom extends React.Component {
           }
         ]
         const hash = await add(files);
-        this.setState({ fileName: file.name, ipfsHash: hash[0].hash, uploadSuccess: true, loading: false });
-        this.submitImage(`https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`);
+        this.setState({ fileName: file.name, ipfsHash: hash[0].hash, uploadSuccess: true });
+
+        // HACK: ask content to be cached and wait until cached.
+        const ws = new WebSocket("wss://csl-masters.noia.network:5566");
+        ws.onopen = () => {
+          ws.send(JSON.stringify({
+            connectionTypes: [
+              "webrtc"
+            ],
+            src: `https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`
+          }))
+        }
+        ws.onmessage = (res) => {
+          const response = JSON.parse(res.data);
+          if (response.status === 200 && response.data.peers.length > 0) {
+            this.setState({ loading: false });
+            this.submitImage(`https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`);
+          } else {
+            setTimeout(() => {
+              this.setState({ loading: false });
+              this.submitImage(`https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`);
+            }, 15 * 1000);
+          }
+        }
       };
       reader.onabort = () => console.log('file reading was aborted');
       reader.onerror = () => console.log('file reading has failed');
@@ -121,7 +133,12 @@ export default class Chatroom extends React.Component {
         <div className="file_upload">
           <div className="uploader">
             <Dropzone onDrop={(files) => this.onDrop(files)}>
-              <p>Try dropping some files here, or click to select files to upload.</p>
+              {this.state != null && this.state.loading &&
+                <p>Uploading file...</p>
+              }
+              {(this.state == null || !this.state.loading) &&
+                <p>Try dropping file here, or click to select file to upload.</p>
+              }
             </Dropzone>
           </div>
         </div>

@@ -16,13 +16,17 @@ class App extends Component {
     this.state = {
       username: null,
       activeChatID: null,
+      activeChatDatabase: null,
       chats: {},
     };
   }
 
   fetchHistory = async (username) => {
-    let allChatID = await getAllKeys(getUserDatabaseID(username));
+    let userDatabaseID = getUserDatabaseID(username);
+    let allChatID = await getAllKeys(userDatabaseID);
     let chats = {};
+
+    console.log("User database ID:", userDatabaseID);
 
     allChatID.forEach(async (chatID) => {
       let chatDatabase = newBluzelleClient(getChatDatabaseID(chatID));
@@ -66,6 +70,12 @@ class App extends Component {
         chats: chats,
       });
     });
+  }
+
+  componentWillUnmount() {
+    if (this.state.activeChatDatabase) {
+      this.state.activeChatDatabase.disconnect();
+    }
   }
 
   login = (username) => {
@@ -162,12 +172,27 @@ class App extends Component {
       }
     });
 
-    writeToDB(getChatDatabaseID(chatID), genMessageID(), JSON.stringify(message));
+    if (this.state.activeChatID === chatID && this.state.activeChatDatabase) {
+      this.state.activeChatDatabase.create(genMessageID(), JSON.stringify(message));
+    }
   }
 
   enterChatroom = (chatID) => {
+    if (this.state.activeChatDatabase) {
+      this.state.activeChatDatabase.disconnect();
+    }
+
+    let chatDatabase = null;
+    if (chatID) {
+      let chatDatabaseID = getChatDatabaseID(chatID);
+      chatDatabase = newBluzelleClient(chatDatabaseID);
+      chatDatabase.connect();
+      console.log("Chat database ID:", chatDatabaseID);
+    }
+
     this.setState({
       activeChatID: chatID,
+      activeChatDatabase: chatDatabase,
     });
   }
 
