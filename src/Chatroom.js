@@ -73,9 +73,11 @@ export default class Chatroom extends React.Component {
             this.submitImage(`https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`);
           } else {
             setTimeout(() => {
-              this.setState({ loading: false });
-              this.submitImage(`https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`);
-            }, 15 * 1000);
+              ws.send(JSON.stringify({
+                connectionTypes: ["webrtc"],
+                src: `https://ipfs.infura.io/ipfs/${this.state.ipfsHash}`
+              }))
+            }, 7 * 1000)
           }
         }
       };
