@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './App.css';
 import Message from './Message.js';
-import { newBluzelleClient } from './bluzelle';
 
 import { Image } from "@noia-network/sdk-react";
 import Dropzone from 'react-dropzone';
@@ -11,15 +10,6 @@ import './UploadFile.css';
 import { getChatName } from './util';
 
 export default class Chatroom extends React.Component {
-  componentWillMount() {
-    this.bluzelleClient = newBluzelleClient(this.props.chatID);
-    this.bluzelleClient.connect();
-  }
-
-  componentWillUnmount() {
-    this.bluzelleClient.disconnect();
-  }
-
   componentDidMount() {
     this.scrollToBot();
   }
