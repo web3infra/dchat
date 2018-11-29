@@ -113,7 +113,7 @@ p {
   box-sizing: border-box;
   padding: 0 20px;
   margin: 10px 0 0;
-  height: 380px;
+  height: 377px;
   overflow-y: scroll;
 }
 
@@ -198,8 +198,8 @@ p {
   position: relative;
   box-sizing: border-box;
   display: inline-block;
-  height: 32px;
-  width: 32px;
+  height: 50px;
+  width: 50px;
   animation: spinner-reveal 1.4s steps(1, end) infinite,
     spinner-rotation 1.4s ease-in-out infinite;
   clip-path: inset(0 0 0 50%);
