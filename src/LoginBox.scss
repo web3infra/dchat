@@ -15,18 +15,13 @@ $blue_theme: #70a1ff;
 }
 .login-input.fix-BNS-input {
     border: 0pt;
-    @media screen and (max-width: 320pt) {
-        width: 90%;
-        padding-right: 0pt;
-    }
+    width: 90%;
+    padding-right: 0pt;
 }
 .BNS-option {
     display: flex;
     align-items: center;
     padding-right: 5%;
-    @media screen and (max-width: 320pt) {
-        padding-right: 5%;
-    }
 }
 .LoginFooter {
     padding-top: 30pt;
@@ -82,8 +77,7 @@ $blue_theme: #70a1ff;
 .box-container {
     display: flex;
     flex-direction: column;
-    max-width: 24em;
-    min-width: 14em;
+    width: 75%;
     box-shadow: 0pt 0pt 20pt 0pt rgba(15, 15, 15, 0.2);
     border-radius: 6pt;
     padding: 24pt;
@@ -132,7 +126,7 @@ $blue_theme: #70a1ff;
 
 //Input
 .login-input {
-    height: 2.1em;
+    height: 30pt;
     border-radius: 3pt;
     border: 1pt solid $blue_theme;
     transition: border 0.4s ease-out;
