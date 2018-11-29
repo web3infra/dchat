@@ -10,7 +10,6 @@ p {
 }
 
 .app {
-  /* background-color: #1EE494; */
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -120,6 +119,7 @@ p {
 
 .chatroom .emojis img {
   max-height: 50pt;
+  cursor: pointer;
 }
 .chatroom .messages {
   box-sizing: border-box;
@@ -142,13 +142,19 @@ p {
   max-width: 200pt;
 }
 
-.chatroom .messages .message img.avatar {
+.chatroom .messages .message .avatar {
   width: 20pt;
   height: 20pt;
   border-radius: 50%;
   position: absolute;
   top: -10pt;
-  left: 0pt;
+  left: -10pt;
+  background-color: white;
+  text-align: center;
+}
+
+.chatroom .messages .message .avatar .avatar-letter {
+  margin-top: 2pt;
 }
 
 .chatroom .messages .message .emoji img {
