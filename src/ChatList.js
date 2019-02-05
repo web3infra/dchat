@@ -39,7 +39,7 @@ const Chat = ({ chat, myUsername, onClick }) => {
 };
 
 export default class ChatList extends React.Component {
-  newChat = () => {
+  newChat = async () => {
     let usernamesStr = prompt('Usernames separated by comma');
     if (!usernamesStr) {
       return
@@ -50,7 +50,7 @@ export default class ChatList extends React.Component {
       return;
     }
 
-    let chatID = this.props.createChatroom(usernames);
+    let chatID = await this.props.createChatroom(usernames);
     this.props.enterChatroom(chatID);
   }
 

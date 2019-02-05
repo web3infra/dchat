@@ -1,24 +1,33 @@
-const { BluzelleClient } = require('bluzelle');
+const { bluzelle } = require('bluzelle');
 
-const wsAddr = 'ws://test.network.bluzelle.com:51010';
+const wsAddr = 'ws://bernoulli.bluzelle.com:51010';
+const privatePem = 'MHQCAQEEIFNmJHEiGpgITlRwao/CDki4OS7BYeI7nyz+CM8NW3xToAcGBSuBBAAKoUQDQgAEndHOcS6bE1P9xjS/U+SM2a1GbQpPuH9sWNWtNYxZr0JcF+sCS2zsD+xlCcbrRXDZtfeDmgD9tHdWhcZKIy8ejQ==';
 
 export function newBluzelleClient(uuid) {
-  return new BluzelleClient(wsAddr, uuid);
+  return bluzelle({
+    entry: wsAddr,
+    uuid: uuid,
+    private_pem: privatePem,
+  });
 }
 
 export async function getAllKeys(databaseID) {
   let bluzelleClient = newBluzelleClient(databaseID);
-  await bluzelleClient.connect();
-  let keys = await bluzelleClient.keys()
-  bluzelleClient.disconnect();
+  let keys = await bluzelleClient.keys();
+  bluzelleClient.close();
   return keys;
+}
+
+export async function createDB(databaseID) {
+  let bluzelleClient = newBluzelleClient(databaseID);
+  await bluzelleClient.createDB();
 }
 
 export async function writeToDB(databaseID, key, value) {
   let bluzelleClient = newBluzelleClient(databaseID);
-  await bluzelleClient.connect();
   await bluzelleClient.create(key, value);
-  await bluzelleClient.disconnect();
+  console.log(await bluzelleClient.keys());
+  bluzelleClient.close();
 }
 
 export function getUserDatabaseID(username) {

@@ -6,7 +6,7 @@ import Chatroom from './Chatroom';
 import LoginBox from './LoginBox';
 
 import { newNKNClient, getNKNAddr } from './nkn';
-import { newBluzelleClient, getAllKeys, writeToDB, getUserDatabaseID, getChatDatabaseID } from './bluzelle';
+import { newBluzelleClient, getAllKeys, createDB, writeToDB, getUserDatabaseID, getChatDatabaseID } from './bluzelle';
 import { genChatID, genMessageID } from './util';
 
 class App extends Component {
@@ -23,7 +23,6 @@ class App extends Component {
 
   loadChat = async (chatID) => {
     let chatDatabase = newBluzelleClient(getChatDatabaseID(chatID));
-    await chatDatabase.connect();
 
     let chat = {};
 
@@ -47,7 +46,7 @@ class App extends Component {
       }
     ));
 
-    chatDatabase.disconnect();
+    chatDatabase.close();
 
     chat.messages = allMessageStr.filter(
       messageStr => messageStr && messageStr.length > 0
@@ -64,16 +63,26 @@ class App extends Component {
 
   fetchHistory = async (username) => {
     let userDatabaseID = getUserDatabaseID(username);
-    let allChatID = await getAllKeys(userDatabaseID);
 
     console.log("User database ID:", userDatabaseID);
+
+    let allChatID = await getAllKeys(userDatabaseID);
+
+    console.log("User has", allChatID && allChatID.length, "chats");
+
+    if (!allChatID || allChatID.length === 0) {
+      try {
+        await createDB(userDatabaseID);
+      } catch (e) {
+      }
+    }
 
     allChatID.forEach(this.loadChat);
   }
 
   componentWillUnmount() {
     if (this.state.activeChatDatabase) {
-      this.state.activeChatDatabase.disconnect();
+      this.state.activeChatDatabase.close();
     }
   }
 
@@ -150,12 +159,13 @@ class App extends Component {
     }
   }
 
-  createChatroom = (otherUsers) => {
+  createChatroom = async (otherUsers) => {
     let chatID = genChatID();
     let chat = {
       users: otherUsers.concat(this.state.username),
     };
 
+    await createDB(getChatDatabaseID(chatID));
     writeToDB(getChatDatabaseID(chatID), 'users', JSON.stringify(chat.users));
     writeToDB(getUserDatabaseID(this.state.username), chatID, '');
 
@@ -205,14 +215,13 @@ class App extends Component {
 
   enterChatroom = (chatID) => {
     if (this.state.activeChatDatabase) {
-      this.state.activeChatDatabase.disconnect();
+      this.state.activeChatDatabase.close();
     }
 
     let chatDatabase = null;
     if (chatID) {
       let chatDatabaseID = getChatDatabaseID(chatID);
       chatDatabase = newBluzelleClient(chatDatabaseID);
-      chatDatabase.connect();
       console.log("Chat database ID:", chatDatabaseID);
     }
 
