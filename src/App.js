@@ -165,10 +165,6 @@ class App extends Component {
       users: otherUsers.concat(this.state.username),
     };
 
-    await createDB(getChatDatabaseID(chatID));
-    writeToDB(getChatDatabaseID(chatID), 'users', JSON.stringify(chat.users));
-    writeToDB(getUserDatabaseID(this.state.username), chatID, '');
-
     let message = {
       content: chat,
       contentType: "newchat",
@@ -179,9 +175,14 @@ class App extends Component {
       message: message,
     }));
 
-    otherUsers.forEach((username) => {
-      writeToDB(getUserDatabaseID(username), chatID, '');
-    });
+    (async function() {
+      await createDB(getChatDatabaseID(chatID));
+      writeToDB(getChatDatabaseID(chatID), 'users', JSON.stringify(chat.users));
+      writeToDB(getUserDatabaseID(this.state.username), chatID, '');
+      otherUsers.forEach((username) => {
+        writeToDB(getUserDatabaseID(username), chatID, '');
+      });
+    })();
 
     this.setState({
       chats: Object.assign({}, this.state.chats, { [chatID]: chat }),
