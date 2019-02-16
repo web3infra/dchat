@@ -30,7 +30,8 @@ export default class CachedImage extends React.Component {
   render() {
     return (
       this.state.didTimeout ?
-      <img
+      <img 
+        alt='click'
         src={this.props.src}
         onClick={this.props.onClick}
         /> :
