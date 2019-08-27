@@ -182,7 +182,7 @@ class App extends Component {
       otherUsers.forEach((username) => {
         writeToDB(getUserDatabaseID(username), chatID, '');
       });
-    })();
+    }.bind(this))();
 
     this.setState({
       chats: Object.assign({}, this.state.chats, { [chatID]: chat }),
